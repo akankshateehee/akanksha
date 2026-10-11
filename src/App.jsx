@@ -87,8 +87,9 @@ function ScrollToTopButton() {
   );
 }
 
-/* --- DYNAMIC ASSET REGISTRY --- */
-const assetFiles = import.meta.glob('./assets/*.png', { eager: true });
+/* --- RECURSIVE SUBFOLDER DYNAMIC ASSET REGISTRY --- */
+/* Scans ./assets/, ./assets/old/, ./assets/thumbnails/, ./assets/new projects/, ./assets/playground/ */
+const assetFiles = import.meta.glob('./assets/**/*.png', { eager: true });
 
 function getAssetUrl(id) {
   if (!id) return null;
@@ -109,7 +110,7 @@ function ProjectImage({ id, altText, className = "", fitMode = "object-cover" })
         <span className="font-mono text-[11px] text-neutral-600 font-bold tracking-wider">
           {id ? `${id}.png` : "Render Preview"}
         </span>
-        <span className="font-mono text-[9px] text-neutral-400 mt-0.5">Missing: src/assets/{id}.png</span>
+        <span className="font-mono text-[9px] text-neutral-400 mt-0.5">Missing: src/assets/**/{id}.png</span>
       </div>
     );
   }
@@ -170,7 +171,7 @@ function BatteryChargingIcon({ className = "w-5 h-5" }) {
   );
 }
 
-/* --- FULL DATA REPOSITORY (GAPLESS 1 TO 78 MAPPING) --- */
+/* --- FULL DATA REPOSITORY --- */
 const FLAGSHIP_2026_PROJECTS = [
   {
     slug: "strata-purifier",
@@ -181,15 +182,15 @@ const FLAGSHIP_2026_PROJECTS = [
     date: "2026",
     category: "Consumer Appliance",
     badge: "PRODUCTION ID / INJECTION DFM",
-    thumbId: "28",
-    heroId: "5",
+    thumbId: "28", // In src/assets/thumbnails/
+    heroId: "5",   // In src/assets/new projects/
     deckBlocks: [
       {
         type: "text_top_image_bottom",
         tag: "ACOUSTICS & ARCHITECTURE",
         title: "Aero-Acoustic Louvre Topology & Air Vortex CFD",
         desc: "Domestic purifiers generate unbearable high-pitch motor whistle at high CADR settings. Iterated 12 blade sweep angles to smooth turbulent intake vortices, yielding a 4.2 dB drop in motor whine.",
-        imageId: "9",
+        imageId: "9", // In src/assets/new projects/
         caption: "Centrifugal Aero-Impeller CFD Pressure Gradient Analysis",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -199,7 +200,7 @@ const FLAGSHIP_2026_PROJECTS = [
         tag: "TOOLING DFM REALIZATION",
         title: "2-Part Shell Tooling & Side Lifter Mitigation",
         desc: "Applied a uniform 2.2mm nominal wall thickness with internal structural flow ribs, keeping the exterior strictly toolable on a single-pull straight-action core and cavity mold.",
-        imageId: "10",
+        imageId: "10", // In src/assets/new projects/
         caption: "Split Chassis Rib Architecture & Bayonet Filter Latch",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -227,15 +228,15 @@ const FLAGSHIP_2026_PROJECTS = [
     date: "2026",
     category: "Hardware & CMF",
     badge: "KINEMATICS / DIE-CAST & STAINLESS",
-    thumbId: "2",
-    heroId: "6",
+    thumbId: "2", // In src/assets/thumbnails/
+    heroId: "6",  // In src/assets/new projects/
     deckBlocks: [
       {
         type: "text_left_image_right",
         tag: "THERMAL PACKAGING",
         title: "14cm Footprint Vertical Consolidation",
         desc: "Consolidated the vibration pump, thermo-coil, and solenoid block into a rigid vertical stack, routing silicone hydraulic lines safely away from hot electrical coils.",
-        imageId: "12",
+        imageId: "12", // In src/assets/new projects/
         caption: "Internal Aluminum Thermoblock Hydraulic Packaging",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -245,7 +246,7 @@ const FLAGSHIP_2026_PROJECTS = [
         tag: "MECHANICAL HAPTICS",
         title: "Spring Ball-Bearing Detent Selector",
         desc: "Engineered custom stepped rotary dials featuring ball-bearing spring detents that deliver crisp mechanical feedback, anchored by a heavy die-cast Zamak counterweight base.",
-        imageId: "14",
+        imageId: "14", // In src/assets/new projects/
         caption: "Finite Element Stress Verification on Group Head Clamp",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -276,8 +277,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Industrial Design",
     badge: "CONSUMER HARDWARE / KINEMATICS",
-    thumbId: "3",
-    heroId: "7",
+    thumbId: "3", // In src/assets/thumbnails/
+    heroId: "7",  // In src/assets/old/
     metaHeader: {
       timeline: "9 Weeks",
       client: "Group Brainstorming / Individual Project",
@@ -290,7 +291,7 @@ const ARCHIVE_PROJECTS = [
         title: "The Two-Hand Bottleneck",
         desc: "The current Scotch Magic Tape dispenser requires two hands to use, forcing the user to take both hands off of their project which needs holding down.",
         steps: ["Release the tape", "Pull the tape", "Cut the tape"],
-        imageId: "11",
+        imageId: "11", // In src/assets/old/
         caption: "Slide 04: The Two-Hand Frustration & Interaction Breakdown",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
@@ -310,7 +311,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BENCHMARKING",
         title: "Competitor & Analogous Products",
         desc: "Studied existing market tape tools alongside analogous single-hand products (jar openers, hole punchers, pizza cutting wheels, and paint rollers) to isolate intuitive tactile cues.",
-        imageId: "13",
+        imageId: "13", // In src/assets/old/
         caption: "Slide 06: Benchmarking Existing & Analogous Physical Mechanisms",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-contain bg-white"
@@ -320,7 +321,7 @@ const ARCHIVE_PROJECTS = [
         tag: "IDEATION & EVALUATION",
         title: "Generating Variety of Ideas",
         desc: "Brainstormed 6 functional categories: Cutting Wheel, Stack Sticky-Note Style, Earbuds with Blade on Cap, Mechanical Suction, and Foot Tether.",
-        imageId: "15",
+        imageId: "15", // In src/assets/old/
         caption: "Slide 07: 6-Column Brainstorming Matrix Evaluating Functionality & Part Counts",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -340,7 +341,7 @@ const ARCHIVE_PROJECTS = [
         tag: "REFINED CONCEPT",
         title: "Refined Concept — Notch & Pull (Slide to Hinge)",
         desc: "Reduced the number of parts by adopting a top notching hinge rather than a sliding cutter. Pressing down engages the concealed micro-blade; a light wrist flick tears the tape cleanly.",
-        imageId: "16",
+        imageId: "16", // In src/assets/old/
         caption: "Slide 09: Slide-to-Hinge Kinematic Conversion & Notching Tool Architecture",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -350,7 +351,7 @@ const ARCHIVE_PROJECTS = [
         tag: "USABILITY SKETCHES",
         title: "Tabletop vs Handheld Dual-Mode Walkthrough",
         desc: "Tabletop Mode: Hold tape end -> Pull tape -> Press Notch Hinge -> Twist tape to tear off. Handheld Mode: Hold dispenser -> Roll tape directly on surface -> Press Notch Hinge -> Twist dispenser to tear off.",
-        imageId: "17",
+        imageId: "17", // In src/assets/old/
         caption: "Slide 10: 4-Step Interaction Sequences Comparing Desktop and Handheld Usability",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-white"
@@ -360,7 +361,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND ANALYSIS",
         title: "Brand Language & Core Value Analysis",
         desc: "Resourcefulness is a core value at Scotch: 'Resourcefulness is about adapting, making do and doing more with what you've got. It's not about using less, but using smarter.'",
-        imageId: "18",
+        imageId: "18", // In src/assets/old/
         caption: "Slide 11: Deconstructing Packaging Variants, Color Architecture & Price Points",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
@@ -370,35 +371,35 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM DEVELOPMENT",
         title: "Form — Making It Look More Scotch",
         desc: "Integrated functional silhouettes: contoured thumb notch hinge, finger rest grooves, and an anti-rollover base lip that anchors horizontal pull forces.",
-        imageId: "19",
+        imageId: "19", // In src/assets/old/
         caption: "Slide 12: Form Iterations & Functional Feature Integration Array",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "20",
+        imageId: "20", // In src/assets/old/
         caption: "Slide 14: Dual-Mode Functional Hero Render",
         aspectClass: "aspect-[16/12] md:aspect-[21/10]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "39", // Formerly gap 39
+        imageId: "39", // In src/assets/old/
         caption: "Slide 16: Final Production Model in Translucent Optical Finish",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "23",
+        imageId: "23", // In src/assets/old/
         caption: "Exploded CMF & Internal Spool Fitment Render",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "40", // Formerly gap 40
+        imageId: "40", // In src/assets/old/
         caption: "High-Gloss Studio Perspective View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -408,7 +409,7 @@ const ARCHIVE_PROJECTS = [
         tag: "EVALUATION",
         title: "Did I hit the mark?",
         desc: "Verified against the kickoff success criteria: single-hand operation, true adherence to brand resourcefulness, and iconic Scotch visual transparency.",
-        imageId: "25",
+        imageId: "25", // In src/assets/old/
         caption: "Slide 17: Previously Set Success Criteria Confirmed Hit",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-contain bg-white"
@@ -430,8 +431,8 @@ const ARCHIVE_PROJECTS = [
     date: "2023",
     category: "Toy Design",
     badge: "TOY ARCHITECTURE / LOW-CAPEX DFM",
-    thumbId: "4",
-    heroId: "8",
+    thumbId: "4", // In src/assets/thumbnails/
+    heroId: "8",  // In src/assets/old/
     metaHeader: {
       timeline: "2 Months",
       client: "Webby Toys — Freshmen Year Internship Project",
@@ -455,7 +456,7 @@ const ARCHIVE_PROJECTS = [
         tag: "OPPORTUNITY MAPPING",
         title: "Finding Opportunities in STEAM Curricula",
         desc: "Mapped intersections between classic games (Pinball, Carrom) and childhood behaviors (spatial reasoning, 2D maps, trajectory angles) to anchor Cartesian coordinate math in physical play.",
-        imageId: "31",
+        imageId: "31", // In src/assets/old/
         caption: "Slide 21: Opportunity Tree Across Science, Math & Spatial Reasoning",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -465,7 +466,7 @@ const ARCHIVE_PROJECTS = [
         tag: "CONCEPT IDEATION",
         title: "Mechanism Explorations & Trajectory Linkages",
         desc: "Explored 3 concepts: Concept #1 Slider linkages, Concept #2 Light ray angles, and Concept #3 Rotating Turret Linkages. Concept #3 was selected for its direct tactile feedback.",
-        imageId: "32",
+        imageId: "32", // In src/assets/old/
         caption: "Slide 23: Mechanism Ideation Sheets & Aiming Detent Concepts",
         aspectClass: "aspect-[4/3]",
         fitMode: "object-contain bg-white"
@@ -475,14 +476,7 @@ const ARCHIVE_PROJECTS = [
         tag: "RAPID PROTOTYPING",
         title: "Prototype Evolution & Structural Assembly",
         desc: "Iterated through 4 functional working mockups to test friction fit tab-and-slot joints, 180° rotational turret tolerances, and consistent marble launch trajectories.",
-        imageId: "33",
-        caption: "Slide 24: Progressive Physical Prototyping Evolution Milestones",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "34",
+        imageId: "34", // In src/assets/old/
         caption: "Slide 25: Production Laser-Cut Assembly & Integrated Score Board",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
@@ -492,7 +486,7 @@ const ARCHIVE_PROJECTS = [
         tag: "COORDINATE INDEXING",
         title: "Plan View Coordinate Grid: (X, Y) Numerical Trajectory Layout",
         desc: "Calculated layout of 16 precision drop holes marked with discrete Cartesian indices (1,1 to 4,4), calibrated directly to dice roll probability matrices.",
-        imageId: "36",
+        imageId: "36", // In src/assets/old/
         caption: "Slide 27: Top-Down Plan View Numerical Grid Map",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-neutral-900"
@@ -502,36 +496,29 @@ const ARCHIVE_PROJECTS = [
         tag: "HOW TO PLAY",
         title: "Play! Throw the Dice, Aim & Shoot, Record Score",
         desc: "Step 1: Throw the coordinate dice -> Step 2: Calculate the coordinate intersection, orient the mechanical turret angle, aim & shoot -> Step 3: Record score on friction-fit sliding markers.",
-        imageId: "38",
+        imageId: "38", // In src/assets/old/
         caption: "Slide 28: Interactive Gameplay Flow & Tactile Scoring Steps",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "35",
+        imageId: "35", // In src/assets/old/
         caption: "Kinematic Turret Pivot Detailing & Pinion Teeth Fitment",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "37",
+        imageId: "37", // In src/assets/old/
         caption: "Die-Cut Flat Packaging Nesting Simulation",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "41", // Formerly gap 41
+        imageId: "41", // In src/assets/old/
         caption: "Elevation View Assembly & Marble Feed Clearance",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "48", // Formerly gap 48
-        caption: "Laser Sheet Stock High-Yield Nesting Layout",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
@@ -559,8 +546,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Computational Design",
     badge: "COMPUTATIONAL ID / AM + INJECTION",
-    thumbId: "21",
-    heroId: "22",
+    thumbId: "21", // In src/assets/thumbnails/
+    heroId: "22",  // In src/assets/old/
     metaHeader: {
       timeline: "Independent Build",
       client: "Skill Demonstration Project",
@@ -585,7 +572,7 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM IDEATION",
         title: "20+ Form Silhouette Iterations",
         desc: "Explored varied profiles balancing minimal geometry with inviting analog affordances.",
-        imageId: "42",
+        imageId: "42", // In src/assets/old/
         caption: "Slide 31: 20+ Silhouette Explorations Balancing Base and Diffuser Ratios",
         aspectClass: "aspect-[21/9] md:aspect-[26/9]",
         fitMode: "object-contain bg-white"
@@ -595,7 +582,7 @@ const ARCHIVE_PROJECTS = [
         tag: "EVALUATION & PARTING LINES",
         title: "Concept Evaluation & Parting Line Innovation",
         desc: "Evaluated 3 concepts. Chose the split configuration with angled dial bosses, designing a non-planar 3D parting line to demold the bosses without costly side-actions.",
-        imageId: "43",
+        imageId: "43", // In src/assets/old/
         caption: "Slide 32: Evaluating Form, Affordance & Line-of-Draw Demold Constraints",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -605,7 +592,7 @@ const ARCHIVE_PROJECTS = [
         tag: "DFM SECTION DRAFT",
         title: "Development Sketch & Tooling Architecture",
         desc: "Engineered single-wall spiral vase mode for the shade, quick-draw threads, and draft angles for injection molding.",
-        imageId: "44",
+        imageId: "44", // In src/assets/old/
         caption: "Slide 33: Cross-Sectional DFM Architecture for Injection & Additive Manufacturing",
         aspectClass: "aspect-[16/9] md:aspect-[21/10]",
         fitMode: "object-contain bg-white"
@@ -615,7 +602,7 @@ const ARCHIVE_PROJECTS = [
         tag: "NATURAL INSPIRATION",
         title: "Form Cues: Curls, Curves & Geometric Fluting",
         desc: "Extracted surface wave mathematics from spiraling shells, cream swirls, and architectural facade ribbing.",
-        imageId: "45",
+        imageId: "45", // In src/assets/old/
         caption: "Slide 34: Visual Moodboard Guiding the Parametric Mathematical Toolpaths",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -625,7 +612,7 @@ const ARCHIVE_PROJECTS = [
         tag: "COMPUTATIONAL DESIGN",
         title: "Grasshopper Parametric Wave Algorithm",
         desc: "Formulated a custom Grasshopper script that translates mathematical wave sweeps into continuous single-line G-code toolpaths.",
-        imageId: "46",
+        imageId: "46", // In src/assets/old/
         caption: "Slide 35: Grasshopper Visual Script for Continuous Toolpath Wave Modulation",
         aspectClass: "aspect-[21/7] md:aspect-[28/8]",
         fitMode: "object-contain bg-white"
@@ -635,14 +622,14 @@ const ARCHIVE_PROJECTS = [
         tag: "PROTOTYPING & WORKSHOP",
         title: "Visual Optical Testing & Firmware Breadboards",
         desc: "Printed test shades at varied frequencies to eliminate LED glare, paired with an Arduino circuit controlling PWM dimming and warm-to-cold CCT balance.",
-        imageId: "47",
+        imageId: "47", // In src/assets/old/
         caption: "Slide 36: Optical Shade Testing Samples Array",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "49",
+        imageId: "49", // In src/assets/old/
         caption: "Slide 38: DFM Line-of-Draw Exploration: Non-Planar Parting Line CAD",
         aspectClass: "aspect-[16/8]",
         fitMode: "object-contain bg-white"
@@ -652,42 +639,42 @@ const ARCHIVE_PROJECTS = [
         tag: "PHYSICAL BUILD",
         title: "Ender 3 Continuous Printing & Base Post-Processing",
         desc: "Fabricated functional working models using continuous spiral PETG printing, hand-sprayed fine texture ABS bases, and turned knobs.",
-        imageId: "54",
+        imageId: "54", // In src/assets/old/
         caption: "Slide 41: Workshop Production: 3D Printing, Enclosure Sanding & Internal Soldering",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "50",
+        imageId: "50", // In src/assets/old/
         caption: "Slide 44: Final Working Model in Illuminated Domestic Setting",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "51",
+        imageId: "51", // In src/assets/old/
         caption: "Warm CCT Illumination Detail & Translucent Optical Ripple",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "52",
+        imageId: "52", // In src/assets/old/
         caption: "Turned Knurled Potentiometer Detailing & Undercut-Free Split Base",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "53", // Formerly gap 53
+        imageId: "53", // In src/assets/old/
         caption: "Diffuser Optical Caustic Shadow Cast Simulation",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "55", // Formerly gap 55
+        imageId: "55", // In src/assets/old/
         caption: "Exploded Internal Electronics Bay & Soldered Potentiometer Wire Loom",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -709,8 +696,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Ergonomics & CMF",
     badge: "BRAND DNA / KINEMATICS",
-    thumbId: "26",
-    heroId: "27",
+    thumbId: "26", // In src/assets/thumbnails/
+    heroId: "27",  // In src/assets/old/
     metaHeader: {
       timeline: "8 Weeks",
       client: "Personal Brand Translation Project",
@@ -722,7 +709,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND PHILOSOPHY",
         title: "Joseph Joseph: Problem Solved / Buy Once. Buy Well.",
         desc: "Joseph Joseph design philosophy keeps functionality at the heart of everything. Starting by identifying an everyday problem and devising durable, beautiful solutions following circular economy principles.",
-        imageId: "61",
+        imageId: "61", // In src/assets/old/
         caption: "Slide 46: Functional Innovation & Material Quality Manifesto",
         aspectClass: "aspect-[4/3] md:aspect-[16/10]",
         fitMode: "object-cover"
@@ -732,7 +719,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND DNA ANALYSIS",
         title: "Deconstructing Design Language Markers",
         desc: "Analyzed design hallmarks: functional material separation to divide visual weight, analogous color palettes with neutral contrast, clean flush transitions between materials, and soft geometric forms.",
-        imageId: "62",
+        imageId: "62", // In src/assets/old/
         caption: "Slide 47: Comprehensive Visual Brand Language & CMF Analysis Matrix",
         aspectClass: "aspect-[16/6]",
         fitMode: "object-contain bg-white"
@@ -742,7 +729,7 @@ const ARCHIVE_PROJECTS = [
         tag: "OPPORTUNITY MAPPING",
         title: "Ergonomic Pain Points Mind Map & Market Positioning",
         desc: "Mapped user personas (DIY enthusiasts, electronics crafters) against functional requirements: preventing burn hazards, dual grip modes, thermal indication, and anti-drool protection.",
-        imageId: "64",
+        imageId: "64", // In src/assets/old/
         caption: "Slide 49: Extensive Mind Map Connecting Functionality, CMF & Ergonomics",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -752,7 +739,7 @@ const ARCHIVE_PROJECTS = [
         tag: "PROBLEM IDENTIFICATION",
         title: "5 Critical Hot-Glue Gun Pain Points",
         desc: "1. Not meant for precision micro-work. 2. Some controls need two hands. 3. Not knowing when it's ready. 4. Frequent turning on/off. 5. Molten adhesive drools during idle rests.",
-        imageId: "65",
+        imageId: "65", // In src/assets/old/
         caption: "Slide 50: Step-by-Step Problem Identification & Hand Interaction Studies",
         aspectClass: "aspect-[21/8] md:aspect-[26/8]",
         fitMode: "object-contain bg-white"
@@ -762,7 +749,7 @@ const ARCHIVE_PROJECTS = [
         tag: "KINEMATICS: MILD TO WILD",
         title: "Attach, Bend, and Twist Architectures",
         desc: "Explored 3 mechanism architectures: Concept 1 'Attach' (swappable handles), Concept 2 'Bend' (single-plane hinge), and Concept 3 'Twist' (twist-and-lock detent joint). Concept 3 was selected for internal wire protection and tactile locking.",
-        imageId: "67",
+        imageId: "67", // In src/assets/old/
         caption: "Slide 52: Kinematic Exploration: Comparing Mechanical Hinge Concepts",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -772,7 +759,7 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM EVOLUTION",
         title: "Form Exploration Across Articulations",
         desc: "Iterated handle proportions across straight-line, 45-degree, and 90-degree angles to ensure natural thumb indexing in both pencil and pistol configurations.",
-        imageId: "68",
+        imageId: "68", // In src/assets/old/
         caption: "Slide 53: Form Variations Investigating Balance in Pencil and Pistol Modes",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -782,49 +769,49 @@ const ARCHIVE_PROJECTS = [
         tag: "CONCEPT REFINEMENT",
         title: "Haptic Detents, Rocker Switches & USB-C",
         desc: "Integrated an internal PTC ceramic heating core, analog rocker switch with color dot feedback, internal USB-C fast charging, and an anti-drool food-grade silicone nozzle shroud.",
-        imageId: "74",
+        imageId: "74", // In src/assets/old/
         caption: "Slide 59: CMF Detailing: Soft-Touch Chassis, High-Gloss Actuators & Rocker Switches",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "75",
+        imageId: "75", // In src/assets/old/
         caption: "Slide 60: Hero Render: Articulating Craft Adhesive Tool in Pencil Grip Mode",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "76",
+        imageId: "76", // In src/assets/old/
         caption: "Internal Mechanical Packaging & PTC Heating Cartridge Assembly",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "77",
+        imageId: "77", // In src/assets/old/
         caption: "Detent Articulation Joint Exploded View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "78",
+        imageId: "78", // In src/assets/old/
         caption: "Slide 62: CMF Product Still: Balanced Dual-Tone Ergonomics and Silicone Shroud",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "56", // Formerly gap 56
+        imageId: "56", // In src/assets/old/
         caption: "Dual-Tone Analogous CMF Colorway Study",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "57", // Formerly gap 57
+        imageId: "57", // In src/assets/old/
         caption: "Pistol Grip High-Pressure Adhesive Extrusion View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -1161,7 +1148,7 @@ function HomePage() {
             </div>
             <h4 className="text-xl font-medium text-white mb-2">About Sahitya</h4>
             <p className="text-neutral-400 text-xs leading-relaxed mb-6 font-light">
-              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience.
+              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience[cite: 8].
             </p>
             <div className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white">
               Read Profile <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1620,15 +1607,15 @@ function CommercialPage() {
 
   const commercialPrograms = [
     {
-      category: "High-Volume Consumer Utility Hardware",
-      badge: "Injection Moulding DFM & Ergonomics",
+      category: "High-Volume Consumer Utility Product",
+      badge: "Cleaning Product",
       icon: <LayersIcon className="w-5 h-5 text-neutral-900" />,
       items: [
         {
-          title: "Dual-Function Utility Stool & Cleaning Bucket System",
-          tag: "PP Copolymer Tooling & Anthropometric Seating",
+          title: "2 Dual-Function Utility Stool & Cleaning Bucket System",
+          tag: "Aesthetics & Anthropometric Seating",
           desc: "Architected a dual-purpose sanitary domestic stool-cum-bucket meeting high-volume injection constraints. Features structural load-bearing rib matrices, quick single-pull tooling, and stackable container logistics.",
-          imageId: "29",
+          imageId: "29", // In src/assets/new projects/
           specs: [
             "Total Plastic Weight: 674g – 693g",
             "Dual Water Chamber: 6L+6L",
@@ -1640,31 +1627,19 @@ function CommercialPage() {
     },
     {
       category: "Heavy-Duty Institutional & Commercial Water Systems",
-      badge: "High-Pressure Hydraulics & Sheet Metal Architecture",
+      badge: "Commercial High End Water Purifiers",
       icon: <DropletsIcon className="w-5 h-5 text-neutral-900" />,
       items: [
         {
-          title: "High-Capacity Institutional Floor-Standing Purification Station",
+          title: "2 High-Capacity Institutional Floor-Standing Purification Station",
           tag: "Industrial Canteen & Enterprise Architecture",
           desc: "Engineered an industrial-scale standing RO purification station for high-footfall institutions, canteens, and enterprise workspaces. Multi-bay maintenance access and insulated foam tanks.",
-          imageId: "30",
+          imageId: "30", // In src/assets/new projects/
           specs: [
             "Heavy-Duty 1.5mm CRCA Metal Enclosure",
             "Insulated Foam Infill Tank Enclosure",
             "Modular Pump & Filter Bay",
             "1:1 Physical Visual Mockup Validated"
-          ]
-        },
-        {
-          title: "Architectural Wall-Mounted Domestic Purifier Unit",
-          tag: "Compact Kitchen Integration & Tool-Free Servicing",
-          desc: "Designed an architectural wall-mounted domestic purifier unit with a compact footprint, tool-free filter replacement, and ambient status readouts.",
-          imageId: "58", // Formerly gap 58
-          specs: [
-            "Internal Booster Pump Packaging",
-            "Kinematic Drop-Down Service Door",
-            "Integrated Ambient LED & TDS Readout",
-            "Full 1:1 Appearance Prototype"
           ]
         }
       ]
@@ -1678,7 +1653,7 @@ function CommercialPage() {
           title: "Domestic Inverter Battery Enclosure & Texture Study",
           tag: "Parametric Surface Texture & Heavy-Duty Load Linkages",
           desc: "Re-engineered heavy 150 Ah tall-tubular inverter battery housings into a modern domestic hardware asset with aerated stiffness dimples and dual rope pivot handles.",
-          imageId: "31",
+          imageId: "31", // In src/assets/new projects/
           specs: [
             "High-Impact Polypropylene Shell",
             "Parametric Dimple Aerated Grid",
@@ -1701,10 +1676,10 @@ function CommercialPage() {
           <Lock className="w-3 h-3" /> Confidential Commercial Portfolio
         </div>
         <h1 className="text-5xl md:text-7xl font-medium tracking-tight text-neutral-900 mb-8 leading-tight">
-          Mass Production & <br /> Industrial Programs
+          Commercialized & <br /> Mass Produced Projects
         </h1>
         <p className="text-2xl text-neutral-500 leading-relaxed font-light">
-          Sanitized engineering overviews of high-volume consumer cleaning equipment, institutional hydraulic fluid systems, and domestic appliances. Brand names and sensitive CAD assemblies are obscured under active non-disclosure agreements.
+          Selected commercial programs spanning domestic appliances and institutional hardware. Focused on strategic form ideation, and 1:1 high-fidelity visual mockups. Client identities protected under NDA.
         </p>
       </div>
 
@@ -1781,11 +1756,10 @@ function CommercialPage() {
   );
 }
 
-/* --- PAGE 4: PLAYGROUND (16 CONSECUTIVE NON-REPEATING SLOTS: 59 TO 78) --- */
+/* --- PAGE 4: PLAYGROUND (16 CONSECUTIVE NON-REPEATING SLOTS IN src/assets/playground/) --- */
 function PlaygroundPage() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // Consecutive slots filling all previously skipped gaps without exceeding 78
   const playgroundRenders = [
     { id: "59", alt: "Physical Form & Ergonomic Clay Mockup" },
     { id: "60", alt: "Procedural Shading & Optical Refraction Study" },
@@ -1839,29 +1813,6 @@ function PlaygroundPage() {
           </div>
         ))}
       </div>
-
-      <div className="mt-20 bg-neutral-50 border border-neutral-200 rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-        <div className="max-w-2xl">
-          <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 block mb-3 font-bold">
-            Curating New High-Res Renders
-          </span>
-          <h3 className="text-2xl md:text-3xl font-medium text-neutral-900 mb-3">
-            Website under construction
-          </h3>
-          <p className="text-neutral-600 text-sm leading-relaxed font-light">
-            I am actively compiling the complete high-resolution 3D asset library here. Till then, check out my <strong>Behance</strong> to view in-depth sketchbooks, clay ergonomics, and full production renders.
-          </p>
-        </div>
-
-        <a 
-          href="https://www.behance.net/sahityakashyap" 
-          target="_blank" 
-          rel="noreferrer" 
-          className="inline-flex items-center gap-3 bg-neutral-900 text-white px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 hover:shadow-lg active:scale-95 transition-all duration-200 shrink-0"
-        >
-          Check my Behance till then <ArrowUpRight className="w-4 h-4" />
-        </a>
-      </div>
     </div>
   );
 }
@@ -1892,14 +1843,14 @@ function AboutPage() {
               <span className="text-neutral-400">With Technical Vigour.</span>
             </h1>
             <p className="text-xl md:text-2xl text-neutral-600 leading-relaxed font-light">
-              Formal Industrial Design background from DTU and Offsite Pro, enriched by 4 years of deep shopfloor Tool & Die craftsmanship[cite: 8]. I craft cohesive product languages, ergonomic consumer experiences, and category-defining hardware that manufacturers can produce without compromise.
+              Formal Industrial Design background from DTU and Offsite Pro, enriched by 4 years of deep shopfloor Tool & Die craftsmanship. I craft cohesive product languages, ergonomic consumer experiences, and category-defining hardware that manufacturers can produce without compromise.
             </p>
           </div>
 
           <div className="lg:col-span-5">
             <div className="w-full aspect-[4/3] lg:aspect-[16/13] rounded-2xl overflow-hidden shadow-sm border border-neutral-200 bg-neutral-100">
               <ProjectImage 
-                id="1" 
+                id="1" // In src/assets/
                 altText="Sahitya Kashyap Studio CAD & Prototyping Setup" 
                 className="w-full h-full object-cover object-center"
               />
@@ -1936,15 +1887,15 @@ function AboutPage() {
                 <div className="space-y-4 text-sm">
                   <div>
                     <h5 className="font-medium text-white">Bachelors of Design (B.Des)</h5>
-                    <p className="text-neutral-400 text-xs">Delhi Technological University (DTU) • Aug 2021 – May 2025[cite: 8]</p>
+                    <p className="text-neutral-400 text-xs">Delhi Technological University (DTU) • Aug 2021 – May 2025</p>
                   </div>
                   <div className="border-t border-neutral-700/50 pt-3">
                     <h5 className="font-medium text-white">Offsite Pro 2024</h5>
-                    <p className="text-neutral-400 text-xs">Advanced Industrial Design Intensive • Chicago, Illinois (June 2024 – Aug 2024)[cite: 8]</p>
+                    <p className="text-neutral-400 text-xs">Advanced Industrial Design Intensive • Chicago, Illinois (June 2024 – Aug 2024)</p>
                   </div>
                   <div className="border-t border-neutral-700/50 pt-3">
                     <h5 className="font-medium text-white">Diploma in Tool & Die Making (4-Year Program)</h5>
-                    <p className="text-neutral-400 text-xs">Delhi Institute of Tool Engineering (DITE) • Aug 2017 – July 2021[cite: 8]</p>
+                    <p className="text-neutral-400 text-xs">Delhi Institute of Tool Engineering (DITE) • Aug 2017 – July 2021</p>
                   </div>
                 </div>
               </div>
@@ -1964,11 +1915,11 @@ function AboutPage() {
                   </div>
                   <div className="border-t border-neutral-700/50 pt-3">
                     <span className="text-neutral-400 block mb-1">Computational & Parametric CAD</span>
-                    <p className="text-neutral-200 font-medium leading-relaxed">Rhino, Grasshopper (GhPython), SolidWorks (CSWP), Autodesk Inventor, Fusion 360[cite: 8]</p>
+                    <p className="text-neutral-200 font-medium leading-relaxed">Rhino, Grasshopper (GhPython), SolidWorks (CSWP), Autodesk Inventor, Fusion 360</p>
                   </div>
                   <div className="border-t border-neutral-700/50 pt-3">
                     <span className="text-neutral-400 block mb-1">Manufacturing Realization (DFM/DFA)</span>
-                    <p className="text-neutral-200 font-medium leading-relaxed">Injection Mould Core/Cavity, Undercut Mitigation, GD&T, Progressive Dies, Sheet Nesting[cite: 8]</p>
+                    <p className="text-neutral-200 font-medium leading-relaxed">Injection Mould Core/Cavity, Undercut Mitigation, GD&T, Progressive Dies, Sheet Nesting</p>
                   </div>
                 </div>
               </div>
@@ -2049,11 +2000,6 @@ export default function App() {
     <ErrorBoundary>
       <Router>
         <div className="min-h-screen bg-white text-neutral-900 font-sans selection:bg-neutral-900 selection:text-white flex flex-col">
-          <div className="bg-neutral-900 py-1.5 text-center">
-            <span className="text-white font-mono text-[9px] font-bold uppercase tracking-[0.3em]">
-              Website under construction, Please visit my behance for my portfolio.
-            </span>
-          </div>
           <Navbar />
           <main className="flex-grow">
             <Routes>
