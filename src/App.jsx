@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, useRef, Component } from 'react';
 import { 
   BrowserRouter as Router, 
   Routes, 
@@ -24,6 +24,130 @@ import {
   Quote,
   Play
 } from 'lucide-react';
+
+/* --- CUSTOM HARDWARE CURSOR COMPONENT --- */
+function CustomCursor() {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const mousePos = useRef({ x: -100, y: -100 });
+  const ringPos = useRef({ x: -100, y: -100 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Only enable custom cursor on fine pointer devices (desktop/mouse)
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    const onMouseMove = (e) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      if (!isVisible) setIsVisible(true);
+
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      }
+    };
+
+    const onMouseLeave = () => setIsVisible(false);
+    const onMouseEnter = () => setIsVisible(true);
+
+    const checkHoverable = (e) => {
+      const target = e.target;
+      if (
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('.cursor-pointer') ||
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON'
+      ) {
+        setIsHovered(true);
+      } else {
+        setIsHovered(false);
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseover', checkHoverable);
+    document.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('mouseenter', onMouseEnter);
+
+    // Smooth trailing ring physics (linear interpolation / lerp)
+    let animationFrameId;
+    const render = () => {
+      const ease = 0.16; // trailing factor
+      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * ease;
+      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * ease;
+
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseover', checkHoverable);
+      document.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('mouseenter', onMouseEnter);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isVisible]);
+
+  return (
+    <>
+      {/* Global CSS for Smooth Scrolling & Slim Scrollbar */}
+      <style>{`
+        html {
+          scroll-behavior: smooth;
+        }
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar {
+          width: 7px;
+          height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #fafafa;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #d4d4d4;
+          border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #737373;
+        }
+        @media (pointer: fine) {
+          body, a, button, input {
+            cursor: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Primary Dot */}
+      <div
+        ref={dotRef}
+        aria-hidden="true"
+        className={`fixed top-0 left-0 w-1.5 h-1.5 -ml-[3px] -mt-[3px] bg-neutral-900 rounded-full pointer-events-none z-[99999] transition-opacity duration-200 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Smooth Trailing Spring Ring */}
+      <div
+        ref={ringRef}
+        aria-hidden="true"
+        className={`fixed top-0 left-0 rounded-full border border-neutral-900 pointer-events-none z-[99998] transition-[width,height,margin,background-color,border-color,opacity] duration-300 ease-out ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        } ${
+          isHovered
+            ? 'w-10 h-10 -ml-5 -mt-5 bg-neutral-900/10 border-neutral-900 scale-110'
+            : 'w-7 h-7 -ml-3.5 -mt-3.5 border-neutral-400 bg-transparent'
+        }`}
+      />
+    </>
+  );
+}
 
 /* --- ERROR BOUNDARY --- */
 class ErrorBoundary extends Component {
@@ -93,12 +217,12 @@ const assetFiles = import.meta.glob('./assets/**/*.{png,webp}', { eager: true })
 function getAssetUrl(id) {
   if (!id) return null;
   const matchKey = Object.keys(assetFiles).find(key => {
-    // Strips either .png or .webp from the end of the filename to find a match
     const filename = key.split('/').pop().replace(/\.(png|webp)$/i, '');
     return filename === String(id);
   });
   return matchKey ? assetFiles[matchKey].default : null;
 }
+
 function ProjectImage({ id, altText, className = "", fitMode = "object-cover" }) {
   const src = getAssetUrl(id);
 
@@ -118,7 +242,7 @@ function ProjectImage({ id, altText, className = "", fitMode = "object-cover" })
     <img 
       src={src} 
       alt={altText} 
-      decoding="async"
+      decoding="async" 
       className={`${fitMode} w-full h-full ${className}`} 
     />
   );
@@ -155,7 +279,7 @@ function LayersIcon({ className = "w-5 h-5" }) {
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 2 7 12 12 22 7 12 2"/>
       <polyline points="2 17 12 22 22 17"/>
-      <polyline points="2 12 12 17 22 12"/>
+      <polyline points="2 12 17 22 12"/>
     </svg>
   );
 }
@@ -174,8 +298,8 @@ function BatteryChargingIcon({ className = "w-5 h-5" }) {
 /* --- FULL DATA REPOSITORY --- */
 const FLAGSHIP_2026_PROJECTS = [
   {
-    slug: "strata-purifier",
-    title: "Strata Modular Air Engine",
+    slug: "In Development",
+    title: "In Development",
     tagline: "High-CADR Domestic Filtration Architecture & Tooling DFM",
     client: "Industrial Mass-Production Appliance Study",
     timeline: "2026 Flagship",
@@ -220,8 +344,8 @@ const FLAGSHIP_2026_PROJECTS = [
     }
   },
   {
-    slug: "veloce-espresso",
-    title: "Veloce Countertop Espresso",
+    slug: "In Development",
+    title: "In Development",
     tagline: "Ultra-Compact Domestic Thermal Architecture & Precision CMF",
     client: "Kinematics & Premium Hardware Build",
     timeline: "2026 Flagship",
@@ -267,7 +391,417 @@ const FLAGSHIP_2026_PROJECTS = [
   }
 ];
 
+/* --- REORDERED ARCHIVE PROJECTS: 1. GLUE GUN -> 2. TOY DESIGN -> 3. LAMP DESIGN -> 4. TAPE DISPENSER --- */
 const ARCHIVE_PROJECTS = [
+  /* 1. GLUE GUN */
+  {
+    slug: "joseph-joseph",
+    title: "Joseph Joseph Glue Gun",
+    tagline: "A glue gun concept designed in line with the design language & philosophy of Joseph Joseph.",
+    client: "Personal Brand Translation Project",
+    timeline: "8 Weeks",
+    date: "2024",
+    category: "Ergonomics & CMF",
+    badge: "BRAND DNA / KINEMATICS",
+    thumbId: "26", // In src/assets/thumbnails/
+    heroId: "27",  // In src/assets/old/
+    metaHeader: {
+      timeline: "8 Weeks",
+      client: "Personal Brand Translation Project",
+      focus: "Brand Language, CMF, Ergonomics & Kinematics"
+    },
+    deckBlocks: [
+      {
+        type: "brand_manifesto",
+        tag: "BRAND PHILOSOPHY",
+        title: "Joseph Joseph: Problem Solved / Buy Once. Buy Well.",
+        desc: "Joseph Joseph design philosophy keeps functionality at the heart of everything. Starting by identifying an everyday problem and devising durable, beautiful solutions following circular economy principles.",
+        imageId: "61", // In src/assets/old/
+        caption: "Slide 46: Functional Innovation & Material Quality Manifesto",
+        aspectClass: "aspect-[4/3] md:aspect-[16/10]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "BRAND DNA ANALYSIS",
+        title: "Deconstructing Design Language Markers",
+        desc: "Analyzed design hallmarks: functional material separation to divide visual weight, analogous color palettes with neutral contrast, clean flush transitions between materials, and soft geometric forms.",
+        imageId: "62", // In src/assets/old/
+        caption: "Slide 47: Comprehensive Visual Brand Language & CMF Analysis Matrix",
+        aspectClass: "aspect-[16/6]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "OPPORTUNITY MAPPING",
+        title: "Ergonomic Pain Points Mind Map & Market Positioning",
+        desc: "Mapped user personas (DIY enthusiasts, electronics crafters) against functional requirements: preventing burn hazards, dual grip modes, thermal indication, and anti-drool protection.",
+        imageId: "64", // In src/assets/old/
+        caption: "Slide 49: Extensive Mind Map Connecting Functionality, CMF & Ergonomics",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "PROBLEM IDENTIFICATION",
+        title: "5 Critical Hot-Glue Gun Pain Points",
+        desc: "1. Not meant for precision micro-work. 2. Some controls need two hands. 3. Not knowing when it's ready. 4. Frequent turning on/off. 5. Molten adhesive drools during idle rests.",
+        imageId: "65", // In src/assets/old/
+        caption: "Slide 50: Step-by-Step Problem Identification & Hand Interaction Studies",
+        aspectClass: "aspect-[21/8] md:aspect-[26/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "KINEMATICS: MILD TO WILD",
+        title: "Attach, Bend, and Twist Architectures",
+        desc: "Explored 3 mechanism architectures: Concept 1 'Attach' (swappable handles), Concept 2 'Bend' (single-plane hinge), and Concept 3 'Twist' (twist-and-lock detent joint). Concept 3 was selected for internal wire protection and tactile locking.",
+        imageId: "67", // In src/assets/old/
+        caption: "Slide 52: Kinematic Exploration: Comparing Mechanical Hinge Concepts",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "FORM EVOLUTION",
+        title: "Form Exploration Across Articulations",
+        desc: "Iterated handle proportions across straight-line, 45-degree, and 90-degree angles to ensure natural thumb indexing in both pencil and pistol configurations.",
+        imageId: "68", // In src/assets/old/
+        caption: "Slide 53: Form Variations Investigating Balance in Pencil and Pistol Modes",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "CONCEPT REFINEMENT",
+        title: "Haptic Detents, Rocker Switches & USB-C",
+        desc: "Integrated an internal PTC ceramic heating core, analog rocker switch with color dot feedback, internal USB-C fast charging, and an anti-drool food-grade silicone nozzle shroud.",
+        imageId: "74", // In src/assets/old/
+        caption: "Slide 59: CMF Detailing: Soft-Touch Chassis, High-Gloss Actuators & Rocker Switches",
+        aspectClass: "aspect-[16/10] md:aspect-[16/9]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "75", // In src/assets/old/
+        caption: "Slide 60: Hero Render: Articulating Craft Adhesive Tool in Pencil Grip Mode",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "76", // In src/assets/old/
+        caption: "Internal Mechanical Packaging & PTC Heating Cartridge Assembly",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "77", // In src/assets/old/
+        caption: "Detent Articulation Joint Exploded View",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "78", // In src/assets/old/
+        caption: "Slide 62: CMF Product Still: Balanced Dual-Tone Ergonomics and Silicone Shroud",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "56", // In src/assets/old/
+        caption: "Dual-Tone Analogous CMF Colorway Study",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "57", // In src/assets/old/
+        caption: "Pistol Grip High-Pressure Adhesive Extrusion View",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      }
+    ],
+    specs: {
+      material: "High-impact heat-resistant Polyamide (PA66-GF) + Food-grade Silicone Boot",
+      finish: "Velvet Soft-touch Matte body with glossy functional highlight levers",
+      tooling: "Internal central pivot joint with detent indexing and flexible silicone wire conduit",
+      software: "SolidWorks, Blender (Procedural Silicone & Cycles Renders), KeyShot Studio, Clay Ergonomics"
+    }
+  },
+
+  /* 2. TOY DESIGN */
+  {
+    slug: "coordinate-war",
+    title: "Coordinate War",
+    tagline: "Interactive STEAM tabletop educational toy teaching 2D Cartesian coordinate indexing.",
+    client: "Webby Toys Pvt Ltd (Design Internship)",
+    timeline: "2 Months",
+    date: "2023",
+    category: "Toy Design",
+    badge: "TOY ARCHITECTURE / LOW-CAPEX DFM",
+    thumbId: "4", // In src/assets/thumbnails/
+    heroId: "8",  // In src/assets/old/
+    metaHeader: {
+      timeline: "2 Months",
+      client: "Webby Toys — Freshmen Year Internship Project",
+      focus: "Toy Design, Design Process, Prototyping (Credits: Vikrant for Graphics)"
+    },
+    deckBlocks: [
+      {
+        type: "quote_and_insights",
+        tag: "RESEARCH & INSIGHTS",
+        quote: "Toys are more interactive now. A lot of them take the imagination out of it. Action figures used to have a little plastic gun, now they have this HUGE oversized gun that actually fires projectiles. Or everything has lights, and sounds... kinda takes the creativity out of it.",
+        quoteAuthor: "Parent Interview (Male, 42, children aged 5, 8)",
+        insights: [
+          { label: "Low Initial Investment", text: "Zero injection molded parts to avoid heavy upfront tooling CAPEX." },
+          { label: "Easy to Understand, Hard to Master", text: "Simpler toys with progressive mastery are significantly more desirable." },
+          { label: "Satisfying Physical UX", text: "Physical reset actions create a high-engagement loop." },
+          { label: "State of Flow", text: "Correct challenge balance puts children into focused flow." }
+        ]
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "OPPORTUNITY MAPPING",
+        title: "Finding Opportunities in STEAM Curricula",
+        desc: "Mapped intersections between classic games (Pinball, Carrom) and childhood behaviors (spatial reasoning, 2D maps, trajectory angles) to anchor Cartesian coordinate math in physical play.",
+        imageId: "31", // In src/assets/old/
+        caption: "Slide 21: Opportunity Tree Across Science, Math & Spatial Reasoning",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "text_left_image_right",
+        tag: "CONCEPT IDEATION",
+        title: "Mechanism Explorations & Trajectory Linkages",
+        desc: "Explored 3 concepts: Concept #1 Slider linkages, Concept #2 Light ray angles, and Concept #3 Rotating Turret Linkages. Concept #3 was selected for its direct tactile feedback.",
+        imageId: "32", // In src/assets/old/
+        caption: "Slide 23: Mechanism Ideation Sheets & Aiming Detent Concepts",
+        aspectClass: "aspect-[4/3]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "RAPID PROTOTYPING",
+        title: "Prototype Evolution & Structural Assembly",
+        desc: "Iterated through 4 functional working mockups to test friction fit tab-and-slot joints, 180° rotational turret tolerances, and consistent marble launch trajectories.",
+        imageId: "34", // In src/assets/old/
+        caption: "Slide 25: Production Laser-Cut Assembly & Integrated Score Board",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "COORDINATE INDEXING",
+        title: "Plan View Coordinate Grid: (X, Y) Numerical Trajectory Layout",
+        desc: "Calculated layout of 16 precision drop holes marked with discrete Cartesian indices (1,1 to 4,4), calibrated directly to dice roll probability matrices.",
+        imageId: "36", // In src/assets/old/
+        caption: "Slide 27: Top-Down Plan View Numerical Grid Map",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-contain bg-neutral-900"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "HOW TO PLAY",
+        title: "Play! Throw the Dice, Aim & Shoot, Record Score",
+        desc: "Step 1: Throw the coordinate dice -> Step 2: Calculate the coordinate intersection, orient the mechanical turret angle, aim & shoot -> Step 3: Record score on friction-fit sliding markers.",
+        imageId: "38", // In src/assets/old/
+        caption: "Slide 28: Interactive Gameplay Flow & Tactile Scoring Steps",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "35", // In src/assets/old/
+        caption: "Kinematic Turret Pivot Detailing & Pinion Teeth Fitment",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "37", // In src/assets/old/
+        caption: "Die-Cut Flat Packaging Nesting Simulation",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "41", // In src/assets/old/
+        caption: "Elevation View Assembly & Marble Feed Clearance",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "video_embed",
+        tag: "PHYSICAL PLAYTESTING DEMO",
+        title: "Working Toy Mechanics & Marble Launch Demonstration",
+        desc: "Watch the live demonstration of the 180° rotary aiming turret, 2D Cartesian coordinate indexing, and marble launch feedback.",
+        youtubeId: "TGUaLafrzao"
+      }
+    ],
+    specs: {
+      material: "Precision FSC MDF / Pine composite sheets + Low-friction Delrin bushings",
+      finish: "Direct UV Screen Printed Graphics with clear matte protective coat",
+      tooling: "High-yield CNC laser cutting and die nesting optimization (<6% scrap rate)",
+      software: "Rhino 3D, Blender (Product Stills & Assembly Exploded Views), SolidWorks, AutoCAD"
+    }
+  },
+
+  /* 3. LAMP DESIGN */
+  {
+    slug: "moodi",
+    title: "MOODI Lamp",
+    tagline: "Algorithmic Lighting & Tooling DFM Exploration",
+    client: "Skill Demonstration Project",
+    timeline: "Independent Build",
+    date: "2024",
+    category: "Computational Design",
+    badge: "COMPUTATIONAL ID / AM + INJECTION",
+    thumbId: "21", // In src/assets/thumbnails/
+    heroId: "22",  // In src/assets/old/
+    metaHeader: {
+      timeline: "Independent Build",
+      client: "Skill Demonstration Project",
+      focus: "Computational Design, DFM Tooling, Physical Firmware"
+    },
+    deckBlocks: [
+      {
+        type: "dual_goals",
+        tag: "PROJECT & PERSONAL GOALS",
+        title: "Balancing Tangible Touch with Algorithmic Craft",
+        projectGoals: [
+          { label: "Tangible Interactions", text: "Creating satisfying tactile analog knobs." },
+          { label: "Unobtrusive Aesthetic", text: "Design that blends quietly into domestic spaces." }
+        ],
+        personalGoals: [
+          { label: "Tooling & Manufacturing", text: "Designing with injection constraints to turn limitations into creative details." },
+          { label: "Computational Design", text: "Leveraging GhPython algorithms for seamless single-wall 3D printing." }
+        ]
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "FORM IDEATION",
+        title: "20+ Form Silhouette Iterations",
+        desc: "Explored varied profiles balancing minimal geometry with inviting analog affordances.",
+        imageId: "42", // In src/assets/old/
+        caption: "Slide 31: 20+ Silhouette Explorations Balancing Base and Diffuser Ratios",
+        aspectClass: "aspect-[21/9] md:aspect-[26/9]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "EVALUATION & PARTING LINES",
+        title: "Concept Evaluation & Parting Line Innovation",
+        desc: "Evaluated 3 concepts. Chose the split configuration with angled dial bosses, designing a non-planar 3D parting line to demold the bosses without costly side-actions.",
+        imageId: "43", // In src/assets/old/
+        caption: "Slide 32: Evaluating Form, Affordance & Line-of-Draw Demold Constraints",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "DFM SECTION DRAFT",
+        title: "Development Sketch & Tooling Architecture",
+        desc: "Engineered single-wall spiral vase mode for the shade, quick-draw threads, and draft angles for injection molding.",
+        imageId: "44", // In src/assets/old/
+        caption: "Slide 33: Cross-Sectional DFM Architecture for Injection & Additive Manufacturing",
+        aspectClass: "aspect-[16/9] md:aspect-[21/10]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "text_top_image_bottom",
+        tag: "NATURAL INSPIRATION",
+        title: "Form Cues: Curls, Curves & Geometric Fluting",
+        desc: "Extracted surface wave mathematics from spiraling shells, cream swirls, and architectural facade ribbing.",
+        imageId: "45", // In src/assets/old/
+        caption: "Slide 34: Visual Moodboard Guiding the Parametric Mathematical Toolpaths",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "COMPUTATIONAL DESIGN",
+        title: "Grasshopper Parametric Wave Algorithm",
+        desc: "Formulated a custom Grasshopper script that translates mathematical wave sweeps into continuous single-line G-code toolpaths.",
+        imageId: "46", // In src/assets/old/
+        caption: "Slide 35: Grasshopper Visual Script for Continuous Toolpath Wave Modulation",
+        aspectClass: "aspect-[21/7] md:aspect-[28/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "PROTOTYPING & WORKSHOP",
+        title: "Visual Optical Testing & Firmware Breadboards",
+        desc: "Printed test shades at varied frequencies to eliminate LED glare, paired with an Arduino circuit controlling PWM dimming and warm-to-cold CCT balance.",
+        imageId: "47", // In src/assets/old/
+        caption: "Slide 36: Optical Shade Testing Samples Array",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "49", // In src/assets/old/
+        caption: "Slide 38: DFM Line-of-Draw Exploration: Non-Planar Parting Line CAD",
+        aspectClass: "aspect-[16/8]",
+        fitMode: "object-contain bg-white"
+      },
+      {
+        type: "thin_horizontal_strip",
+        tag: "PHYSICAL BUILD",
+        title: "Ender 3 Continuous Printing & Base Post-Processing",
+        desc: "Fabricated functional working models using continuous spiral PETG printing, hand-sprayed fine texture ABS bases, and turned knobs.",
+        imageId: "54", // In src/assets/old/
+        caption: "Slide 41: Workshop Production: 3D Printing, Enclosure Sanding & Internal Soldering",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "50", // In src/assets/old/
+        caption: "Slide 44: Final Working Model in Illuminated Domestic Setting",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "51", // In src/assets/old/
+        caption: "Warm CCT Illumination Detail & Translucent Optical Ripple",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "52", // In src/assets/old/
+        caption: "Turned Knurled Potentiometer Detailing & Undercut-Free Split Base",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "53", // In src/assets/old/
+        caption: "Diffuser Optical Caustic Shadow Cast Simulation",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      },
+      {
+        type: "pure_render_spread",
+        imageId: "55", // In src/assets/old/
+        caption: "Exploded Internal Electronics Bay & Soldered Potentiometer Wire Loom",
+        aspectClass: "aspect-[16/9]",
+        fitMode: "object-cover"
+      }
+    ],
+    specs: {
+      material: "Shade: Translucent PETG (Continuous AM). Base: Matte ABS Injection Resins",
+      finish: "Diffuser: Optical refractive wave fluting. Base: Mold-Tech MT-11010 Fine Matte",
+      tooling: "Single-action 2-plate tool using non-planar curves to avoid costly side-actions",
+      software: "Rhino, Grasshopper (GhPython), Blender (Procedural Shaders), SolidWorks, Arduino"
+    }
+  },
+
+  /* 4. TAPE DISPENSER */
   {
     slug: "scotch",
     title: "One Hand Scotch Dispenser",
@@ -420,408 +954,6 @@ const ARCHIVE_PROJECTS = [
       finish: "SPI-A2 High Polish Body with VDI 24 Textured Thumb Indents",
       tooling: "2-plate injection mould with dual mechanical slide lifters for core spool hub",
       software: "SolidWorks, Blender (Ideation & Rendering), KeyShot Studio, Rapid 3D Mockups"
-    }
-  },
-  {
-    slug: "coordinate-war",
-    title: "Coordinate War",
-    tagline: "Interactive STEAM tabletop educational toy teaching 2D Cartesian coordinate indexing.",
-    client: "Webby Toys Pvt Ltd (Design Internship)",
-    timeline: "2 Months",
-    date: "2023",
-    category: "Toy Design",
-    badge: "TOY ARCHITECTURE / LOW-CAPEX DFM",
-    thumbId: "4", // In src/assets/thumbnails/
-    heroId: "8",  // In src/assets/old/
-    metaHeader: {
-      timeline: "2 Months",
-      client: "Webby Toys — Freshmen Year Internship Project",
-      focus: "Toy Design, Design Process, Prototyping (Credits: Vikrant for Graphics)"
-    },
-    deckBlocks: [
-      {
-        type: "quote_and_insights",
-        tag: "RESEARCH & INSIGHTS",
-        quote: "Toys are more interactive now. A lot of them take the imagination out of it. Action figures used to have a little plastic gun, now they have this HUGE oversized gun that actually fires projectiles. Or everything has lights, and sounds... kinda takes the creativity out of it.",
-        quoteAuthor: "Parent Interview (Male, 42, children aged 5, 8)",
-        insights: [
-          { label: "Low Initial Investment", text: "Zero injection molded parts to avoid heavy upfront tooling CAPEX." },
-          { label: "Easy to Understand, Hard to Master", text: "Simpler toys with progressive mastery are significantly more desirable." },
-          { label: "Satisfying Physical UX", text: "Physical reset actions create a high-engagement loop." },
-          { label: "State of Flow", text: "Correct challenge balance puts children into focused flow." }
-        ]
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "OPPORTUNITY MAPPING",
-        title: "Finding Opportunities in STEAM Curricula",
-        desc: "Mapped intersections between classic games (Pinball, Carrom) and childhood behaviors (spatial reasoning, 2D maps, trajectory angles) to anchor Cartesian coordinate math in physical play.",
-        imageId: "31", // In src/assets/old/
-        caption: "Slide 21: Opportunity Tree Across Science, Math & Spatial Reasoning",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "text_left_image_right",
-        tag: "CONCEPT IDEATION",
-        title: "Mechanism Explorations & Trajectory Linkages",
-        desc: "Explored 3 concepts: Concept #1 Slider linkages, Concept #2 Light ray angles, and Concept #3 Rotating Turret Linkages. Concept #3 was selected for its direct tactile feedback.",
-        imageId: "32", // In src/assets/old/
-        caption: "Slide 23: Mechanism Ideation Sheets & Aiming Detent Concepts",
-        aspectClass: "aspect-[4/3]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "RAPID PROTOTYPING",
-        title: "Prototype Evolution & Structural Assembly",
-        desc: "Iterated through 4 functional working mockups to test friction fit tab-and-slot joints, 180° rotational turret tolerances, and consistent marble launch trajectories.",
-        imageId: "34", // In src/assets/old/
-        caption: "Slide 25: Production Laser-Cut Assembly & Integrated Score Board",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "COORDINATE INDEXING",
-        title: "Plan View Coordinate Grid: (X, Y) Numerical Trajectory Layout",
-        desc: "Calculated layout of 16 precision drop holes marked with discrete Cartesian indices (1,1 to 4,4), calibrated directly to dice roll probability matrices.",
-        imageId: "36", // In src/assets/old/
-        caption: "Slide 27: Top-Down Plan View Numerical Grid Map",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-contain bg-neutral-900"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "HOW TO PLAY",
-        title: "Play! Throw the Dice, Aim & Shoot, Record Score",
-        desc: "Step 1: Throw the coordinate dice -> Step 2: Calculate the coordinate intersection, orient the mechanical turret angle, aim & shoot -> Step 3: Record score on friction-fit sliding markers.",
-        imageId: "38", // In src/assets/old/
-        caption: "Slide 28: Interactive Gameplay Flow & Tactile Scoring Steps",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "35", // In src/assets/old/
-        caption: "Kinematic Turret Pivot Detailing & Pinion Teeth Fitment",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "37", // In src/assets/old/
-        caption: "Die-Cut Flat Packaging Nesting Simulation",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "41", // In src/assets/old/
-        caption: "Elevation View Assembly & Marble Feed Clearance",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "video_embed",
-        tag: "PHYSICAL PLAYTESTING DEMO",
-        title: "Working Toy Mechanics & Marble Launch Demonstration",
-        desc: "Watch the live demonstration of the 180° rotary aiming turret, 2D Cartesian coordinate indexing, and marble launch feedback.",
-        youtubeId: "TGUaLafrzao"
-      }
-    ],
-    specs: {
-      material: "Precision FSC MDF / Pine composite sheets + Low-friction Delrin bushings",
-      finish: "Direct UV Screen Printed Graphics with clear matte protective coat",
-      tooling: "High-yield CNC laser cutting and die nesting optimization (<6% scrap rate)",
-      software: "Rhino 3D, Blender (Product Stills & Assembly Exploded Views), SolidWorks, AutoCAD"
-    }
-  },
-  {
-    slug: "moodi",
-    title: "MOODI Lamp",
-    tagline: "Algorithmic Lighting & Tooling DFM Exploration",
-    client: "Skill Demonstration Project",
-    timeline: "Independent Build",
-    date: "2024",
-    category: "Computational Design",
-    badge: "COMPUTATIONAL ID / AM + INJECTION",
-    thumbId: "21", // In src/assets/thumbnails/
-    heroId: "22",  // In src/assets/old/
-    metaHeader: {
-      timeline: "Independent Build",
-      client: "Skill Demonstration Project",
-      focus: "Computational Design, DFM Tooling, Physical Firmware"
-    },
-    deckBlocks: [
-      {
-        type: "dual_goals",
-        tag: "PROJECT & PERSONAL GOALS",
-        title: "Balancing Tangible Touch with Algorithmic Craft",
-        projectGoals: [
-          { label: "Tangible Interactions", text: "Creating satisfying tactile analog knobs." },
-          { label: "Unobtrusive Aesthetic", text: "Design that blends quietly into domestic spaces." }
-        ],
-        personalGoals: [
-          { label: "Tooling & Manufacturing", text: "Designing with injection constraints to turn limitations into creative details." },
-          { label: "Computational Design", text: "Leveraging GhPython algorithms for seamless single-wall 3D printing." }
-        ]
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "FORM IDEATION",
-        title: "20+ Form Silhouette Iterations",
-        desc: "Explored varied profiles balancing minimal geometry with inviting analog affordances.",
-        imageId: "42", // In src/assets/old/
-        caption: "Slide 31: 20+ Silhouette Explorations Balancing Base and Diffuser Ratios",
-        aspectClass: "aspect-[21/9] md:aspect-[26/9]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "EVALUATION & PARTING LINES",
-        title: "Concept Evaluation & Parting Line Innovation",
-        desc: "Evaluated 3 concepts. Chose the split configuration with angled dial bosses, designing a non-planar 3D parting line to demold the bosses without costly side-actions.",
-        imageId: "43", // In src/assets/old/
-        caption: "Slide 32: Evaluating Form, Affordance & Line-of-Draw Demold Constraints",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "DFM SECTION DRAFT",
-        title: "Development Sketch & Tooling Architecture",
-        desc: "Engineered single-wall spiral vase mode for the shade, quick-draw threads, and draft angles for injection molding.",
-        imageId: "44", // In src/assets/old/
-        caption: "Slide 33: Cross-Sectional DFM Architecture for Injection & Additive Manufacturing",
-        aspectClass: "aspect-[16/9] md:aspect-[21/10]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "NATURAL INSPIRATION",
-        title: "Form Cues: Curls, Curves & Geometric Fluting",
-        desc: "Extracted surface wave mathematics from spiraling shells, cream swirls, and architectural facade ribbing.",
-        imageId: "45", // In src/assets/old/
-        caption: "Slide 34: Visual Moodboard Guiding the Parametric Mathematical Toolpaths",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "COMPUTATIONAL DESIGN",
-        title: "Grasshopper Parametric Wave Algorithm",
-        desc: "Formulated a custom Grasshopper script that translates mathematical wave sweeps into continuous single-line G-code toolpaths.",
-        imageId: "46", // In src/assets/old/
-        caption: "Slide 35: Grasshopper Visual Script for Continuous Toolpath Wave Modulation",
-        aspectClass: "aspect-[21/7] md:aspect-[28/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "PROTOTYPING & WORKSHOP",
-        title: "Visual Optical Testing & Firmware Breadboards",
-        desc: "Printed test shades at varied frequencies to eliminate LED glare, paired with an Arduino circuit controlling PWM dimming and warm-to-cold CCT balance.",
-        imageId: "47", // In src/assets/old/
-        caption: "Slide 36: Optical Shade Testing Samples Array",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "49", // In src/assets/old/
-        caption: "Slide 38: DFM Line-of-Draw Exploration: Non-Planar Parting Line CAD",
-        aspectClass: "aspect-[16/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "PHYSICAL BUILD",
-        title: "Ender 3 Continuous Printing & Base Post-Processing",
-        desc: "Fabricated functional working models using continuous spiral PETG printing, hand-sprayed fine texture ABS bases, and turned knobs.",
-        imageId: "54", // In src/assets/old/
-        caption: "Slide 41: Workshop Production: 3D Printing, Enclosure Sanding & Internal Soldering",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "50", // In src/assets/old/
-        caption: "Slide 44: Final Working Model in Illuminated Domestic Setting",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "51", // In src/assets/old/
-        caption: "Warm CCT Illumination Detail & Translucent Optical Ripple",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "52", // In src/assets/old/
-        caption: "Turned Knurled Potentiometer Detailing & Undercut-Free Split Base",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "53", // In src/assets/old/
-        caption: "Diffuser Optical Caustic Shadow Cast Simulation",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "55", // In src/assets/old/
-        caption: "Exploded Internal Electronics Bay & Soldered Potentiometer Wire Loom",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      }
-    ],
-    specs: {
-      material: "Shade: Translucent PETG (Continuous AM). Base: Matte ABS Injection Resins",
-      finish: "Diffuser: Optical refractive wave fluting. Base: Mold-Tech MT-11010 Fine Matte",
-      tooling: "Single-action 2-plate tool using non-planar curves to avoid costly side-actions",
-      software: "Rhino, Grasshopper (GhPython), Blender (Procedural Shaders), SolidWorks, Arduino"
-    }
-  },
-  {
-    slug: "joseph-joseph",
-    title: "Joseph Joseph Glue Gun",
-    tagline: "A glue gun concept designed in line with the design language & philosophy of Joseph Joseph.",
-    client: "Personal Brand Translation Project",
-    timeline: "8 Weeks",
-    date: "2024",
-    category: "Ergonomics & CMF",
-    badge: "BRAND DNA / KINEMATICS",
-    thumbId: "26", // In src/assets/thumbnails/
-    heroId: "27",  // In src/assets/old/
-    metaHeader: {
-      timeline: "8 Weeks",
-      client: "Personal Brand Translation Project",
-      focus: "Brand Language, CMF, Ergonomics & Kinematics"
-    },
-    deckBlocks: [
-      {
-        type: "brand_manifesto",
-        tag: "BRAND PHILOSOPHY",
-        title: "Joseph Joseph: Problem Solved / Buy Once. Buy Well.",
-        desc: "Joseph Joseph design philosophy keeps functionality at the heart of everything. Starting by identifying an everyday problem and devising durable, beautiful solutions following circular economy principles.",
-        imageId: "61", // In src/assets/old/
-        caption: "Slide 46: Functional Innovation & Material Quality Manifesto",
-        aspectClass: "aspect-[4/3] md:aspect-[16/10]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "BRAND DNA ANALYSIS",
-        title: "Deconstructing Design Language Markers",
-        desc: "Analyzed design hallmarks: functional material separation to divide visual weight, analogous color palettes with neutral contrast, clean flush transitions between materials, and soft geometric forms.",
-        imageId: "62", // In src/assets/old/
-        caption: "Slide 47: Comprehensive Visual Brand Language & CMF Analysis Matrix",
-        aspectClass: "aspect-[16/6]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "OPPORTUNITY MAPPING",
-        title: "Ergonomic Pain Points Mind Map & Market Positioning",
-        desc: "Mapped user personas (DIY enthusiasts, electronics crafters) against functional requirements: preventing burn hazards, dual grip modes, thermal indication, and anti-drool protection.",
-        imageId: "64", // In src/assets/old/
-        caption: "Slide 49: Extensive Mind Map Connecting Functionality, CMF & Ergonomics",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "PROBLEM IDENTIFICATION",
-        title: "5 Critical Hot-Glue Gun Pain Points",
-        desc: "1. Not meant for precision micro-work. 2. Some controls need two hands. 3. Not knowing when it's ready. 4. Frequent turning on/off. 5. Molten adhesive drools during idle rests.",
-        imageId: "65", // In src/assets/old/
-        caption: "Slide 50: Step-by-Step Problem Identification & Hand Interaction Studies",
-        aspectClass: "aspect-[21/8] md:aspect-[26/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "KINEMATICS: MILD TO WILD",
-        title: "Attach, Bend, and Twist Architectures",
-        desc: "Explored 3 mechanism architectures: Concept 1 'Attach' (swappable handles), Concept 2 'Bend' (single-plane hinge), and Concept 3 'Twist' (twist-and-lock detent joint). Concept 3 was selected for internal wire protection and tactile locking.",
-        imageId: "67", // In src/assets/old/
-        caption: "Slide 52: Kinematic Exploration: Comparing Mechanical Hinge Concepts",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "thin_horizontal_strip",
-        tag: "FORM EVOLUTION",
-        title: "Form Exploration Across Articulations",
-        desc: "Iterated handle proportions across straight-line, 45-degree, and 90-degree angles to ensure natural thumb indexing in both pencil and pistol configurations.",
-        imageId: "68", // In src/assets/old/
-        caption: "Slide 53: Form Variations Investigating Balance in Pencil and Pistol Modes",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "text_top_image_bottom",
-        tag: "CONCEPT REFINEMENT",
-        title: "Haptic Detents, Rocker Switches & USB-C",
-        desc: "Integrated an internal PTC ceramic heating core, analog rocker switch with color dot feedback, internal USB-C fast charging, and an anti-drool food-grade silicone nozzle shroud.",
-        imageId: "74", // In src/assets/old/
-        caption: "Slide 59: CMF Detailing: Soft-Touch Chassis, High-Gloss Actuators & Rocker Switches",
-        aspectClass: "aspect-[16/10] md:aspect-[16/9]",
-        fitMode: "object-contain bg-white"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "75", // In src/assets/old/
-        caption: "Slide 60: Hero Render: Articulating Craft Adhesive Tool in Pencil Grip Mode",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "76", // In src/assets/old/
-        caption: "Internal Mechanical Packaging & PTC Heating Cartridge Assembly",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "77", // In src/assets/old/
-        caption: "Detent Articulation Joint Exploded View",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "78", // In src/assets/old/
-        caption: "Slide 62: CMF Product Still: Balanced Dual-Tone Ergonomics and Silicone Shroud",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "56", // In src/assets/old/
-        caption: "Dual-Tone Analogous CMF Colorway Study",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      },
-      {
-        type: "pure_render_spread",
-        imageId: "57", // In src/assets/old/
-        caption: "Pistol Grip High-Pressure Adhesive Extrusion View",
-        aspectClass: "aspect-[16/9]",
-        fitMode: "object-cover"
-      }
-    ],
-    specs: {
-      material: "High-impact heat-resistant Polyamide (PA66-GF) + Food-grade Silicone Boot",
-      finish: "Velvet Soft-touch Matte body with glossy functional highlight levers",
-      tooling: "Internal central pivot joint with detent indexing and flexible silicone wire conduit",
-      software: "SolidWorks, Blender (Procedural Silicone & Cycles Renders), KeyShot Studio, Clay Ergonomics"
     }
   }
 ];
@@ -1054,7 +1186,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 2: 4 PAST CASE STUDIES */}
+      {/* SECTION 2: 4 PAST CASE STUDIES (REORDERED) */}
       <section className="max-w-[1400px] mx-auto px-6 md:px-12 pb-32">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8 border-t border-neutral-100 pt-16 pb-4 w-full">
           <div className="flex items-center gap-2.5">
@@ -1148,7 +1280,7 @@ function HomePage() {
             </div>
             <h4 className="text-xl font-medium text-white mb-2">About Sahitya</h4>
             <p className="text-neutral-400 text-xs leading-relaxed mb-6 font-light">
-              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience[cite: 8].
+              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience.
             </p>
             <div className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white">
               Read Profile <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1741,9 +1873,9 @@ function CommercialPage() {
       </div>
       
       <div className="mt-28 p-12 bg-neutral-900 rounded-3xl text-center flex flex-col items-center">
-        <h3 className="text-3xl font-medium text-white mb-4">Request sanitized CAD walkthrough</h3>
+        <h3 className="text-3xl font-medium text-white mb-4">Request Commercial Projects walkthrough</h3>
         <p className="text-neutral-400 text-base mb-8 max-w-xl font-light">
-          Available for private walk-throughs of sanitized CAD models, physical visual mockups, and production tooling drawings for verified teams.
+          Available for private walk-throughs of Design Process, physical visual mockups, and renders for verified teams.
         </p>
         <a 
           href="mailto:design.er.saahi@gmail.com?subject=Confidential%20Portfolio%20Review" 
@@ -1779,7 +1911,7 @@ function PlaygroundPage() {
     { id: "84", alt: "Minimalist Ambient Lighting Render" },
     { id: "85", alt: "Workshop Prototyping Assembly Still" },
 
-    // Added slots: 86 through 100
+    // Added slots: 86 through 97
     { id: "86", alt: "Ergonomic Handheld Exploration" },
     { id: "87", alt: "Sub-D Surface Continuity Study" },
     { id: "88", alt: "Algorithmic Generative Texture" },
@@ -1791,8 +1923,7 @@ function PlaygroundPage() {
     { id: "94", alt: "Cycles Physical Lighting Study" },
     { id: "95", alt: "Analog Dial Mechanical Detent Study" },
     { id: "96", alt: "Thermal Convection Heat Fin Analysis" },
-    { id: "97", alt: "Dual-Tone Co-Molding Interface" },
-
+    { id: "97", alt: "Dual-Tone Co-Molding Interface" }
   ];
 
   return (
@@ -2016,6 +2147,7 @@ export default function App() {
     <ErrorBoundary>
       <Router>
         <div className="min-h-screen bg-white text-neutral-900 font-sans selection:bg-neutral-900 selection:text-white flex flex-col">
+          <CustomCursor />
           <Navbar />
           <main className="flex-grow">
             <Routes>
