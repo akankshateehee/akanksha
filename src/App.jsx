@@ -292,7 +292,7 @@ const ARCHIVE_PROJECTS = [
         steps: ["Release the tape", "Pull the tape", "Cut the tape"],
         imageId: "11",
         caption: "Slide 04: The Two-Hand Frustration & Interaction Breakdown",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
       },
       {
@@ -322,7 +322,7 @@ const ARCHIVE_PROJECTS = [
         desc: "Brainstormed 6 functional categories: Cutting Wheel, Stack Sticky-Note Style, Earbuds with Blade on Cap, Mechanical Suction, and Foot Tether.",
         imageId: "15",
         caption: "Slide 07: 6-Column Brainstorming Matrix Evaluating Functionality & Part Counts",
-        aspectClass: "aspect-[4/3] md:aspect-[5/4]",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
       },
       {
@@ -342,7 +342,7 @@ const ARCHIVE_PROJECTS = [
         desc: "Reduced the number of parts by adopting a top notching hinge rather than a sliding cutter. Pressing down engages the concealed micro-blade; a light wrist flick tears the tape cleanly.",
         imageId: "16",
         caption: "Slide 09: Slide-to-Hinge Kinematic Conversion & Notching Tool Architecture",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
       },
       {
@@ -352,7 +352,7 @@ const ARCHIVE_PROJECTS = [
         desc: "Tabletop Mode: Hold tape end -> Pull tape -> Press Notch Hinge -> Twist tape to tear off. Handheld Mode: Hold dispenser -> Roll tape directly on surface -> Press Notch Hinge -> Twist dispenser to tear off.",
         imageId: "17",
         caption: "Slide 10: 4-Step Interaction Sequences Comparing Desktop and Handheld Usability",
-        aspectClass: "aspect-[21/9] md:aspect-[26/8]",
+        aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
@@ -372,14 +372,14 @@ const ARCHIVE_PROJECTS = [
         desc: "Integrated functional silhouettes: contoured thumb notch hinge, finger rest grooves, and an anti-rollover base lip that anchors horizontal pull forces.",
         imageId: "19",
         caption: "Slide 12: Form Iterations & Functional Feature Integration Array",
-        aspectClass: "aspect-[21/8] md:aspect-[24/8]",
+        aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
         imageId: "20",
         caption: "Slide 14: Dual-Mode Functional Hero Render",
-        aspectClass: "aspect-[16/9] md:aspect-[21/9]",
+        aspectClass: "aspect-[16/12] md:aspect-[21/10]",
         fitMode: "object-cover"
       },
       {
@@ -644,7 +644,7 @@ const ARCHIVE_PROJECTS = [
         type: "pure_render_spread",
         imageId: "49",
         caption: "Slide 38: DFM Line-of-Draw Exploration: Non-Planar Parting Line CAD",
-        aspectClass: "aspect-[16/9]",
+        aspectClass: "aspect-[16/8]",
         fitMode: "object-contain bg-white"
       },
       {
@@ -734,7 +734,7 @@ const ARCHIVE_PROJECTS = [
         desc: "Analyzed design hallmarks: functional material separation to divide visual weight, analogous color palettes with neutral contrast, clean flush transitions between materials, and soft geometric forms.",
         imageId: "62",
         caption: "Slide 47: Comprehensive Visual Brand Language & CMF Analysis Matrix",
-        aspectClass: "aspect-[4/3] md:aspect-[16/10]",
+        aspectClass: "aspect-[16/6]",
         fitMode: "object-contain bg-white"
       },
       {
