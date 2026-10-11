@@ -1756,11 +1756,12 @@ function CommercialPage() {
   );
 }
 
-/* --- PAGE 4: PLAYGROUND (16 CONSECUTIVE NON-REPEATING SLOTS IN src/assets/playground/) --- */
+/* --- PAGE 4: PLAYGROUND (EXPANDED TO INCLUDE 86 TO 100) --- */
 function PlaygroundPage() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const playgroundRenders = [
+    // Original playground batch
     { id: "59", alt: "Physical Form & Ergonomic Clay Mockup" },
     { id: "60", alt: "Procedural Shading & Optical Refraction Study" },
     { id: "63", alt: "Grasshopper Parametric Fluting Toolpath" },
@@ -1770,13 +1771,28 @@ function PlaygroundPage() {
     { id: "71", alt: "Continuous 3D Print Toolpath Iteration" },
     { id: "72", alt: "Sheet Metal Stamping Progressive Layout" },
     { id: "73", alt: "Hard Surface Blender Subdivision Study" },
+    { id: "79", alt: "Fine Mold-Tech Texture CMF Palette" },
+    { id: "80", alt: "Curved Parting Line Engineering Section" },
     { id: "81", alt: "Tactile Button Affordance & Travel Clearance" },
     { id: "82", alt: "Die-Cast Heat Sink Fin Simulation" },
     { id: "83", alt: "Dual-Durometer Overmold Texture Sample" },
     { id: "84", alt: "Minimalist Ambient Lighting Render" },
     { id: "85", alt: "Workshop Prototyping Assembly Still" },
-    { id: "79", alt: "Fine Mold-Tech Texture CMF Palette" },
-    { id: "80", alt: "Curved Parting Line Engineering Section" }
+
+    // Added slots: 86 through 100
+    { id: "86", alt: "Ergonomic Handheld Exploration" },
+    { id: "87", alt: "Sub-D Surface Continuity Study" },
+    { id: "88", alt: "Algorithmic Generative Texture" },
+    { id: "89", alt: "Anodized Aluminum CMF Specularity" },
+    { id: "90", alt: "Snap-Fit Latch Deflection CAD" },
+    { id: "91", alt: "Exploded Chassis Fastener Architecture" },
+    { id: "92", alt: "Spiral Vase Additive Toolpath" },
+    { id: "93", alt: "Progressive Die Sheet Metal Nesting" },
+    { id: "94", alt: "Cycles Physical Lighting Study" },
+    { id: "95", alt: "Analog Dial Mechanical Detent Study" },
+    { id: "96", alt: "Thermal Convection Heat Fin Analysis" },
+    { id: "97", alt: "Dual-Tone Co-Molding Interface" },
+
   ];
 
   return (
