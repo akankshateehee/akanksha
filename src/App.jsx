@@ -88,19 +88,18 @@ function ScrollToTopButton() {
 }
 
 /* --- RECURSIVE SUBFOLDER DYNAMIC ASSET REGISTRY --- */
-/* Scans ./assets/, ./assets/old/, ./assets/thumbnails/, ./assets/new projects/, ./assets/playground/ */
-const assetFiles = import.meta.glob('./assets/**/*.png', { eager: true });
+const assetFiles = import.meta.glob('./assets/**/*.{png,webp}', { eager: true });
 
 function getAssetUrl(id) {
   if (!id) return null;
   const matchKey = Object.keys(assetFiles).find(key => {
-    const filename = key.split('/').pop().replace(/\.png$/i, '');
+    // Strips either .png or .webp from the end of the filename to find a match
+    const filename = key.split('/').pop().replace(/\.(png|webp)$/i, '');
     return filename === String(id);
   });
   return matchKey ? assetFiles[matchKey].default : null;
 }
-
-function ProjectImage({ id, altText, className = "", fitMode = "object-cover" }) {
+function ProjectImage({ id, altText, className = "", fitMode = "object-cover", priority = false }) {
   const src = getAssetUrl(id);
 
   if (!src) {
@@ -119,6 +118,8 @@ function ProjectImage({ id, altText, className = "", fitMode = "object-cover" })
     <img 
       src={src} 
       alt={altText} 
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
       className={`${fitMode} w-full h-full ${className}`} 
     />
   );
