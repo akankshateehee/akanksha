@@ -14,34 +14,27 @@ import {
   ImageIcon, 
   ArrowUp, 
   Menu, 
-  X,
-  CheckCircle2,
-  Sparkles,
-  Layers,
-  Wrench,
-  ShieldCheck,
-  EyeOff,
-  Quote,
-  Play
+  X, 
+  Sparkles, 
+  Layers, 
+  Wrench, 
+  EyeOff, 
+  Quote, 
+  Play 
 } from 'lucide-react';
 
-/* --- CUSTOM HARDWARE CURSOR COMPONENT --- */
+/* --- ZERO-LATENCY HARDWARE PRECISION CURSOR --- */
 function CustomCursor() {
   const dotRef = useRef(null);
-  const ringRef = useRef(null);
-  const mousePos = useRef({ x: -100, y: -100 });
-  const ringPos = useRef({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Only enable custom cursor on fine pointer devices (desktop/mouse)
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const onMouseMove = (e) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
       if (!isVisible) setIsVisible(true);
-
+      // Direct hardware coordinate tracking: zero lerp, zero trailing lag
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
       }
@@ -67,45 +60,28 @@ function CustomCursor() {
       }
     };
 
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseover', checkHoverable);
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('mouseover', checkHoverable, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
-
-    // Smooth trailing ring physics (linear interpolation / lerp)
-    let animationFrameId;
-    const render = () => {
-      const ease = 0.16; // trailing factor
-      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * ease;
-      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * ease;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
-      }
-      animationFrameId = requestAnimationFrame(render);
-    };
-    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseover', checkHoverable);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
-      cancelAnimationFrame(animationFrameId);
     };
   }, [isVisible]);
 
   return (
     <>
-      {/* Global CSS for Smooth Scrolling & Slim Scrollbar */}
       <style>{`
         html {
           scroll-behavior: smooth;
         }
-        /* Custom Modern Scrollbar */
         ::-webkit-scrollbar {
-          width: 7px;
-          height: 7px;
+          width: 6px;
+          height: 6px;
         }
         ::-webkit-scrollbar-track {
           background: #fafafa;
@@ -124,25 +100,16 @@ function CustomCursor() {
         }
       `}</style>
 
-      {/* Primary Dot */}
+      {/* Zero-Lag Instant Precision Dot */}
       <div
         ref={dotRef}
         aria-hidden="true"
-        className={`fixed top-0 left-0 w-1.5 h-1.5 -ml-[3px] -mt-[3px] bg-neutral-900 rounded-full pointer-events-none z-[99999] transition-opacity duration-200 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-
-      {/* Smooth Trailing Spring Ring */}
-      <div
-        ref={ringRef}
-        aria-hidden="true"
-        className={`fixed top-0 left-0 rounded-full border border-neutral-900 pointer-events-none z-[99998] transition-[width,height,margin,background-color,border-color,opacity] duration-300 ease-out ${
+        className={`fixed top-0 left-0 pointer-events-none z-[99999] rounded-full will-change-transform transition-[width,height,margin,background-color,border] duration-150 ease-out ${
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
           isHovered
-            ? 'w-10 h-10 -ml-5 -mt-5 bg-neutral-900/10 border-neutral-900 scale-110'
-            : 'w-7 h-7 -ml-3.5 -mt-3.5 border-neutral-400 bg-transparent'
+            ? 'w-6 h-6 -ml-3 -mt-3 bg-neutral-900/10 border border-neutral-900'
+            : 'w-2 h-2 -ml-1 -mt-1 bg-neutral-900 border-none'
         }`}
       />
     </>
@@ -159,7 +126,7 @@ class ErrorBoundary extends Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, errorInfo) {
-    console.error("Portfolio caught an error:", error, errorInfo);
+    console.error("Portfolio error:", error, errorInfo);
   }
   render() {
     if (this.state.hasError) {
@@ -223,8 +190,9 @@ function getAssetUrl(id) {
   return matchKey ? assetFiles[matchKey].default : null;
 }
 
-function ProjectImage({ id, altText, className = "", fitMode = "object-cover" }) {
+function ProjectImage({ id, altText, className = "", fitMode = "object-cover", withLoader = false }) {
   const src = getAssetUrl(id);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   if (!src) {
     return (
@@ -233,18 +201,28 @@ function ProjectImage({ id, altText, className = "", fitMode = "object-cover" })
         <span className="font-mono text-[11px] text-neutral-600 font-bold tracking-wider">
           {id ? `${id}.png` : "Render Preview"}
         </span>
-        <span className="font-mono text-[9px] text-neutral-400 mt-0.5">Missing: src/assets/**/{id}.png</span>
+        <span className="font-mono text-[9px] text-neutral-400 mt-0.5">Missing: src/assets/**/{id}</span>
       </div>
     );
   }
 
   return (
-    <img 
-      src={src} 
-      alt={altText} 
-      decoding="async" 
-      className={`${fitMode} w-full h-full ${className}`} 
-    />
+    <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      {withLoader && !isLoaded && (
+        <div className="absolute inset-0 bg-neutral-100 animate-pulse flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full border-2 border-neutral-300 border-t-neutral-600 animate-spin" />
+        </div>
+      )}
+      <img 
+        src={src} 
+        alt={altText} 
+        decoding="async" 
+        onLoad={() => setIsLoaded(true)}
+        className={`${fitMode} w-full h-full transition-all duration-700 ease-out ${
+          withLoader ? (isLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xs scale-102') : 'opacity-100'
+        }`} 
+      />
+    </div>
   );
 }
 
@@ -306,15 +284,15 @@ const FLAGSHIP_2026_PROJECTS = [
     date: "2026",
     category: "Consumer Appliance",
     badge: "PRODUCTION ID / INJECTION DFM",
-    thumbId: "28", // In src/assets/thumbnails/
-    heroId: "5",   // In src/assets/new projects/
+    thumbId: "28",
+    heroId: "5",
     deckBlocks: [
       {
         type: "text_top_image_bottom",
         tag: "ACOUSTICS & ARCHITECTURE",
         title: "Aero-Acoustic Louvre Topology & Air Vortex CFD",
         desc: "Domestic purifiers generate unbearable high-pitch motor whistle at high CADR settings. Iterated 12 blade sweep angles to smooth turbulent intake vortices, yielding a 4.2 dB drop in motor whine.",
-        imageId: "9", // In src/assets/new projects/
+        imageId: "9",
         caption: "Centrifugal Aero-Impeller CFD Pressure Gradient Analysis",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -324,7 +302,7 @@ const FLAGSHIP_2026_PROJECTS = [
         tag: "TOOLING DFM REALIZATION",
         title: "2-Part Shell Tooling & Side Lifter Mitigation",
         desc: "Applied a uniform 2.2mm nominal wall thickness with internal structural flow ribs, keeping the exterior strictly toolable on a single-pull straight-action core and cavity mold.",
-        imageId: "10", // In src/assets/new projects/
+        imageId: "10",
         caption: "Split Chassis Rib Architecture & Bayonet Filter Latch",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -352,15 +330,15 @@ const FLAGSHIP_2026_PROJECTS = [
     date: "2026",
     category: "Hardware & CMF",
     badge: "KINEMATICS / DIE-CAST & STAINLESS",
-    thumbId: "2", // In src/assets/thumbnails/
-    heroId: "6",  // In src/assets/new projects/
+    thumbId: "2",
+    heroId: "6",
     deckBlocks: [
       {
         type: "text_left_image_right",
         tag: "THERMAL PACKAGING",
         title: "14cm Footprint Vertical Consolidation",
         desc: "Consolidated the vibration pump, thermo-coil, and solenoid block into a rigid vertical stack, routing silicone hydraulic lines safely away from hot electrical coils.",
-        imageId: "12", // In src/assets/new projects/
+        imageId: "12",
         caption: "Internal Aluminum Thermoblock Hydraulic Packaging",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -370,7 +348,7 @@ const FLAGSHIP_2026_PROJECTS = [
         tag: "MECHANICAL HAPTICS",
         title: "Spring Ball-Bearing Detent Selector",
         desc: "Engineered custom stepped rotary dials featuring ball-bearing spring detents that deliver crisp mechanical feedback, anchored by a heavy die-cast Zamak counterweight base.",
-        imageId: "14", // In src/assets/new projects/
+        imageId: "14",
         caption: "Finite Element Stress Verification on Group Head Clamp",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-cover"
@@ -391,7 +369,7 @@ const FLAGSHIP_2026_PROJECTS = [
   }
 ];
 
-/* --- REORDERED ARCHIVE PROJECTS: 1. GLUE GUN -> 2. TOY DESIGN -> 3. LAMP DESIGN -> 4. TAPE DISPENSER --- */
+/* --- ARCHIVE PROJECTS --- */
 const ARCHIVE_PROJECTS = [
   /* 1. GLUE GUN */
   {
@@ -403,8 +381,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Ergonomics & CMF",
     badge: "BRAND DNA / KINEMATICS",
-    thumbId: "26", // In src/assets/thumbnails/
-    heroId: "27",  // In src/assets/old/
+    thumbId: "26",
+    heroId: "27",
     metaHeader: {
       timeline: "8 Weeks",
       client: "Personal Brand Translation Project",
@@ -416,7 +394,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND PHILOSOPHY",
         title: "Joseph Joseph: Problem Solved / Buy Once. Buy Well.",
         desc: "Joseph Joseph design philosophy keeps functionality at the heart of everything. Starting by identifying an everyday problem and devising durable, beautiful solutions following circular economy principles.",
-        imageId: "61", // In src/assets/old/
+        imageId: "61",
         caption: "Slide 46: Functional Innovation & Material Quality Manifesto",
         aspectClass: "aspect-[4/3] md:aspect-[16/10]",
         fitMode: "object-cover"
@@ -426,7 +404,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND DNA ANALYSIS",
         title: "Deconstructing Design Language Markers",
         desc: "Analyzed design hallmarks: functional material separation to divide visual weight, analogous color palettes with neutral contrast, clean flush transitions between materials, and soft geometric forms.",
-        imageId: "62", // In src/assets/old/
+        imageId: "62",
         caption: "Slide 47: Comprehensive Visual Brand Language & CMF Analysis Matrix",
         aspectClass: "aspect-[16/6]",
         fitMode: "object-contain bg-white"
@@ -436,7 +414,7 @@ const ARCHIVE_PROJECTS = [
         tag: "OPPORTUNITY MAPPING",
         title: "Ergonomic Pain Points Mind Map & Market Positioning",
         desc: "Mapped user personas (DIY enthusiasts, electronics crafters) against functional requirements: preventing burn hazards, dual grip modes, thermal indication, and anti-drool protection.",
-        imageId: "64", // In src/assets/old/
+        imageId: "64",
         caption: "Slide 49: Extensive Mind Map Connecting Functionality, CMF & Ergonomics",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -446,7 +424,7 @@ const ARCHIVE_PROJECTS = [
         tag: "PROBLEM IDENTIFICATION",
         title: "5 Critical Hot-Glue Gun Pain Points",
         desc: "1. Not meant for precision micro-work. 2. Some controls need two hands. 3. Not knowing when it's ready. 4. Frequent turning on/off. 5. Molten adhesive drools during idle rests.",
-        imageId: "65", // In src/assets/old/
+        imageId: "65",
         caption: "Slide 50: Step-by-Step Problem Identification & Hand Interaction Studies",
         aspectClass: "aspect-[21/8] md:aspect-[26/8]",
         fitMode: "object-contain bg-white"
@@ -456,7 +434,7 @@ const ARCHIVE_PROJECTS = [
         tag: "KINEMATICS: MILD TO WILD",
         title: "Attach, Bend, and Twist Architectures",
         desc: "Explored 3 mechanism architectures: Concept 1 'Attach' (swappable handles), Concept 2 'Bend' (single-plane hinge), and Concept 3 'Twist' (twist-and-lock detent joint). Concept 3 was selected for internal wire protection and tactile locking.",
-        imageId: "67", // In src/assets/old/
+        imageId: "67",
         caption: "Slide 52: Kinematic Exploration: Comparing Mechanical Hinge Concepts",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -466,7 +444,7 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM EVOLUTION",
         title: "Form Exploration Across Articulations",
         desc: "Iterated handle proportions across straight-line, 45-degree, and 90-degree angles to ensure natural thumb indexing in both pencil and pistol configurations.",
-        imageId: "68", // In src/assets/old/
+        imageId: "68",
         caption: "Slide 53: Form Variations Investigating Balance in Pencil and Pistol Modes",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -476,49 +454,49 @@ const ARCHIVE_PROJECTS = [
         tag: "CONCEPT REFINEMENT",
         title: "Haptic Detents, Rocker Switches & USB-C",
         desc: "Integrated an internal PTC ceramic heating core, analog rocker switch with color dot feedback, internal USB-C fast charging, and an anti-drool food-grade silicone nozzle shroud.",
-        imageId: "74", // In src/assets/old/
+        imageId: "74",
         caption: "Slide 59: CMF Detailing: Soft-Touch Chassis, High-Gloss Actuators & Rocker Switches",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "75", // In src/assets/old/
+        imageId: "75",
         caption: "Slide 60: Hero Render: Articulating Craft Adhesive Tool in Pencil Grip Mode",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "76", // In src/assets/old/
+        imageId: "76",
         caption: "Internal Mechanical Packaging & PTC Heating Cartridge Assembly",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "77", // In src/assets/old/
+        imageId: "77",
         caption: "Detent Articulation Joint Exploded View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "78", // In src/assets/old/
+        imageId: "78",
         caption: "Slide 62: CMF Product Still: Balanced Dual-Tone Ergonomics and Silicone Shroud",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "56", // In src/assets/old/
+        imageId: "56",
         caption: "Dual-Tone Analogous CMF Colorway Study",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "57", // In src/assets/old/
+        imageId: "57",
         caption: "Pistol Grip High-Pressure Adhesive Extrusion View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -542,8 +520,8 @@ const ARCHIVE_PROJECTS = [
     date: "2023",
     category: "Toy Design",
     badge: "TOY ARCHITECTURE / LOW-CAPEX DFM",
-    thumbId: "4", // In src/assets/thumbnails/
-    heroId: "8",  // In src/assets/old/
+    thumbId: "4",
+    heroId: "8",
     metaHeader: {
       timeline: "2 Months",
       client: "Webby Toys — Freshmen Year Internship Project",
@@ -567,7 +545,7 @@ const ARCHIVE_PROJECTS = [
         tag: "OPPORTUNITY MAPPING",
         title: "Finding Opportunities in STEAM Curricula",
         desc: "Mapped intersections between classic games (Pinball, Carrom) and childhood behaviors (spatial reasoning, 2D maps, trajectory angles) to anchor Cartesian coordinate math in physical play.",
-        imageId: "31", // In src/assets/old/
+        imageId: "31",
         caption: "Slide 21: Opportunity Tree Across Science, Math & Spatial Reasoning",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -577,7 +555,7 @@ const ARCHIVE_PROJECTS = [
         tag: "CONCEPT IDEATION",
         title: "Mechanism Explorations & Trajectory Linkages",
         desc: "Explored 3 concepts: Concept #1 Slider linkages, Concept #2 Light ray angles, and Concept #3 Rotating Turret Linkages. Concept #3 was selected for its direct tactile feedback.",
-        imageId: "32", // In src/assets/old/
+        imageId: "32",
         caption: "Slide 23: Mechanism Ideation Sheets & Aiming Detent Concepts",
         aspectClass: "aspect-[4/3]",
         fitMode: "object-contain bg-white"
@@ -587,7 +565,7 @@ const ARCHIVE_PROJECTS = [
         tag: "RAPID PROTOTYPING",
         title: "Prototype Evolution & Structural Assembly",
         desc: "Iterated through 4 functional working mockups to test friction fit tab-and-slot joints, 180° rotational turret tolerances, and consistent marble launch trajectories.",
-        imageId: "34", // In src/assets/old/
+        imageId: "34",
         caption: "Slide 25: Production Laser-Cut Assembly & Integrated Score Board",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
@@ -597,7 +575,7 @@ const ARCHIVE_PROJECTS = [
         tag: "COORDINATE INDEXING",
         title: "Plan View Coordinate Grid: (X, Y) Numerical Trajectory Layout",
         desc: "Calculated layout of 16 precision drop holes marked with discrete Cartesian indices (1,1 to 4,4), calibrated directly to dice roll probability matrices.",
-        imageId: "36", // In src/assets/old/
+        imageId: "36",
         caption: "Slide 27: Top-Down Plan View Numerical Grid Map",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-neutral-900"
@@ -607,28 +585,28 @@ const ARCHIVE_PROJECTS = [
         tag: "HOW TO PLAY",
         title: "Play! Throw the Dice, Aim & Shoot, Record Score",
         desc: "Step 1: Throw the coordinate dice -> Step 2: Calculate the coordinate intersection, orient the mechanical turret angle, aim & shoot -> Step 3: Record score on friction-fit sliding markers.",
-        imageId: "38", // In src/assets/old/
+        imageId: "38",
         caption: "Slide 28: Interactive Gameplay Flow & Tactile Scoring Steps",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "35", // In src/assets/old/
+        imageId: "35",
         caption: "Kinematic Turret Pivot Detailing & Pinion Teeth Fitment",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "37", // In src/assets/old/
+        imageId: "37",
         caption: "Die-Cut Flat Packaging Nesting Simulation",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "41", // In src/assets/old/
+        imageId: "41",
         caption: "Elevation View Assembly & Marble Feed Clearance",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -659,8 +637,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Computational Design",
     badge: "COMPUTATIONAL ID / AM + INJECTION",
-    thumbId: "21", // In src/assets/thumbnails/
-    heroId: "22",  // In src/assets/old/
+    thumbId: "21",
+    heroId: "22",
     metaHeader: {
       timeline: "Independent Build",
       client: "Skill Demonstration Project",
@@ -685,7 +663,7 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM IDEATION",
         title: "20+ Form Silhouette Iterations",
         desc: "Explored varied profiles balancing minimal geometry with inviting analog affordances.",
-        imageId: "42", // In src/assets/old/
+        imageId: "42",
         caption: "Slide 31: 20+ Silhouette Explorations Balancing Base and Diffuser Ratios",
         aspectClass: "aspect-[21/9] md:aspect-[26/9]",
         fitMode: "object-contain bg-white"
@@ -695,7 +673,7 @@ const ARCHIVE_PROJECTS = [
         tag: "EVALUATION & PARTING LINES",
         title: "Concept Evaluation & Parting Line Innovation",
         desc: "Evaluated 3 concepts. Chose the split configuration with angled dial bosses, designing a non-planar 3D parting line to demold the bosses without costly side-actions.",
-        imageId: "43", // In src/assets/old/
+        imageId: "43",
         caption: "Slide 32: Evaluating Form, Affordance & Line-of-Draw Demold Constraints",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
@@ -705,7 +683,7 @@ const ARCHIVE_PROJECTS = [
         tag: "DFM SECTION DRAFT",
         title: "Development Sketch & Tooling Architecture",
         desc: "Engineered single-wall spiral vase mode for the shade, quick-draw threads, and draft angles for injection molding.",
-        imageId: "44", // In src/assets/old/
+        imageId: "44",
         caption: "Slide 33: Cross-Sectional DFM Architecture for Injection & Additive Manufacturing",
         aspectClass: "aspect-[16/9] md:aspect-[21/10]",
         fitMode: "object-contain bg-white"
@@ -715,7 +693,7 @@ const ARCHIVE_PROJECTS = [
         tag: "NATURAL INSPIRATION",
         title: "Form Cues: Curls, Curves & Geometric Fluting",
         desc: "Extracted surface wave mathematics from spiraling shells, cream swirls, and architectural facade ribbing.",
-        imageId: "45", // In src/assets/old/
+        imageId: "45",
         caption: "Slide 34: Visual Moodboard Guiding the Parametric Mathematical Toolpaths",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -725,7 +703,7 @@ const ARCHIVE_PROJECTS = [
         tag: "COMPUTATIONAL DESIGN",
         title: "Grasshopper Parametric Wave Algorithm",
         desc: "Formulated a custom Grasshopper script that translates mathematical wave sweeps into continuous single-line G-code toolpaths.",
-        imageId: "46", // In src/assets/old/
+        imageId: "46",
         caption: "Slide 35: Grasshopper Visual Script for Continuous Toolpath Wave Modulation",
         aspectClass: "aspect-[21/7] md:aspect-[28/8]",
         fitMode: "object-contain bg-white"
@@ -735,14 +713,14 @@ const ARCHIVE_PROJECTS = [
         tag: "PROTOTYPING & WORKSHOP",
         title: "Visual Optical Testing & Firmware Breadboards",
         desc: "Printed test shades at varied frequencies to eliminate LED glare, paired with an Arduino circuit controlling PWM dimming and warm-to-cold CCT balance.",
-        imageId: "47", // In src/assets/old/
+        imageId: "47",
         caption: "Slide 36: Optical Shade Testing Samples Array",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "49", // In src/assets/old/
+        imageId: "49",
         caption: "Slide 38: DFM Line-of-Draw Exploration: Non-Planar Parting Line CAD",
         aspectClass: "aspect-[16/8]",
         fitMode: "object-contain bg-white"
@@ -752,42 +730,42 @@ const ARCHIVE_PROJECTS = [
         tag: "PHYSICAL BUILD",
         title: "Ender 3 Continuous Printing & Base Post-Processing",
         desc: "Fabricated functional working models using continuous spiral PETG printing, hand-sprayed fine texture ABS bases, and turned knobs.",
-        imageId: "54", // In src/assets/old/
+        imageId: "54",
         caption: "Slide 41: Workshop Production: 3D Printing, Enclosure Sanding & Internal Soldering",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "50", // In src/assets/old/
+        imageId: "50",
         caption: "Slide 44: Final Working Model in Illuminated Domestic Setting",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "51", // In src/assets/old/
+        imageId: "51",
         caption: "Warm CCT Illumination Detail & Translucent Optical Ripple",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "52", // In src/assets/old/
+        imageId: "52",
         caption: "Turned Knurled Potentiometer Detailing & Undercut-Free Split Base",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "53", // In src/assets/old/
+        imageId: "53",
         caption: "Diffuser Optical Caustic Shadow Cast Simulation",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "55", // In src/assets/old/
+        imageId: "55",
         caption: "Exploded Internal Electronics Bay & Soldered Potentiometer Wire Loom",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -811,8 +789,8 @@ const ARCHIVE_PROJECTS = [
     date: "2024",
     category: "Industrial Design",
     badge: "CONSUMER HARDWARE / KINEMATICS",
-    thumbId: "3", // In src/assets/thumbnails/
-    heroId: "7",  // In src/assets/old/
+    thumbId: "3",
+    heroId: "7",
     metaHeader: {
       timeline: "9 Weeks",
       client: "Group Brainstorming / Individual Project",
@@ -825,7 +803,7 @@ const ARCHIVE_PROJECTS = [
         title: "The Two-Hand Bottleneck",
         desc: "The current Scotch Magic Tape dispenser requires two hands to use, forcing the user to take both hands off of their project which needs holding down.",
         steps: ["Release the tape", "Pull the tape", "Cut the tape"],
-        imageId: "11", // In src/assets/old/
+        imageId: "11",
         caption: "Slide 04: The Two-Hand Frustration & Interaction Breakdown",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-cover"
@@ -845,7 +823,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BENCHMARKING",
         title: "Competitor & Analogous Products",
         desc: "Studied existing market tape tools alongside analogous single-hand products (jar openers, hole punchers, pizza cutting wheels, and paint rollers) to isolate intuitive tactile cues.",
-        imageId: "13", // In src/assets/old/
+        imageId: "13",
         caption: "Slide 06: Benchmarking Existing & Analogous Physical Mechanisms",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-contain bg-white"
@@ -855,7 +833,7 @@ const ARCHIVE_PROJECTS = [
         tag: "IDEATION & EVALUATION",
         title: "Generating Variety of Ideas",
         desc: "Brainstormed 6 functional categories: Cutting Wheel, Stack Sticky-Note Style, Earbuds with Blade on Cap, Mechanical Suction, and Foot Tether.",
-        imageId: "15", // In src/assets/old/
+        imageId: "15",
         caption: "Slide 07: 6-Column Brainstorming Matrix Evaluating Functionality & Part Counts",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -875,7 +853,7 @@ const ARCHIVE_PROJECTS = [
         tag: "REFINED CONCEPT",
         title: "Refined Concept — Notch & Pull (Slide to Hinge)",
         desc: "Reduced the number of parts by adopting a top notching hinge rather than a sliding cutter. Pressing down engages the concealed micro-blade; a light wrist flick tears the tape cleanly.",
-        imageId: "16", // In src/assets/old/
+        imageId: "16",
         caption: "Slide 09: Slide-to-Hinge Kinematic Conversion & Notching Tool Architecture",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -885,7 +863,7 @@ const ARCHIVE_PROJECTS = [
         tag: "USABILITY SKETCHES",
         title: "Tabletop vs Handheld Dual-Mode Walkthrough",
         desc: "Tabletop Mode: Hold tape end -> Pull tape -> Press Notch Hinge -> Twist tape to tear off. Handheld Mode: Hold dispenser -> Roll tape directly on surface -> Press Notch Hinge -> Twist dispenser to tear off.",
-        imageId: "17", // In src/assets/old/
+        imageId: "17",
         caption: "Slide 10: 4-Step Interaction Sequences Comparing Desktop and Handheld Usability",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-white"
@@ -895,7 +873,7 @@ const ARCHIVE_PROJECTS = [
         tag: "BRAND ANALYSIS",
         title: "Brand Language & Core Value Analysis",
         desc: "Resourcefulness is a core value at Scotch: 'Resourcefulness is about adapting, making do and doing more with what you've got. It's not about using less, but using smarter.'",
-        imageId: "18", // In src/assets/old/
+        imageId: "18",
         caption: "Slide 11: Deconstructing Packaging Variants, Color Architecture & Price Points",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
@@ -905,35 +883,35 @@ const ARCHIVE_PROJECTS = [
         tag: "FORM DEVELOPMENT",
         title: "Form — Making It Look More Scotch",
         desc: "Integrated functional silhouettes: contoured thumb notch hinge, finger rest grooves, and an anti-rollover base lip that anchors horizontal pull forces.",
-        imageId: "19", // In src/assets/old/
+        imageId: "19",
         caption: "Slide 12: Form Iterations & Functional Feature Integration Array",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "20", // In src/assets/old/
+        imageId: "20",
         caption: "Slide 14: Dual-Mode Functional Hero Render",
         aspectClass: "aspect-[16/12] md:aspect-[21/10]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "39", // In src/assets/old/
+        imageId: "39",
         caption: "Slide 16: Final Production Model in Translucent Optical Finish",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "23", // In src/assets/old/
+        imageId: "23",
         caption: "Exploded CMF & Internal Spool Fitment Render",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "40", // In src/assets/old/
+        imageId: "40",
         caption: "High-Gloss Studio Perspective View",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
@@ -943,7 +921,7 @@ const ARCHIVE_PROJECTS = [
         tag: "EVALUATION",
         title: "Did I hit the mark?",
         desc: "Verified against the kickoff success criteria: single-hand operation, true adherence to brand resourcefulness, and iconic Scotch visual transparency.",
-        imageId: "25", // In src/assets/old/
+        imageId: "25",
         caption: "Slide 17: Previously Set Success Criteria Confirmed Hit",
         aspectClass: "aspect-[16/10]",
         fitMode: "object-contain bg-white"
@@ -1186,7 +1164,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 2: 4 PAST CASE STUDIES (REORDERED) */}
+      {/* SECTION 2: 4 PAST CASE STUDIES */}
       <section className="max-w-[1400px] mx-auto px-6 md:px-12 pb-32">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8 border-t border-neutral-100 pt-16 pb-4 w-full">
           <div className="flex items-center gap-2.5">
@@ -1747,7 +1725,7 @@ function CommercialPage() {
           title: "2 Dual-Function Utility Stool & Cleaning Bucket System",
           tag: "Aesthetics & Anthropometric Seating",
           desc: "Architected a dual-purpose sanitary domestic stool-cum-bucket meeting high-volume injection constraints. Features structural load-bearing rib matrices, quick single-pull tooling, and stackable container logistics.",
-          imageId: "29", // In src/assets/new projects/
+          imageId: "29",
           specs: [
             "Total Plastic Weight: 674g – 693g",
             "Dual Water Chamber: 6L+6L",
@@ -1766,7 +1744,7 @@ function CommercialPage() {
           title: "2 High-Capacity Institutional Floor-Standing Purification Station",
           tag: "Industrial Canteen & Enterprise Architecture",
           desc: "Engineered an industrial-scale standing RO purification station for high-footfall institutions, canteens, and enterprise workspaces. Multi-bay maintenance access and insulated foam tanks.",
-          imageId: "30", // In src/assets/new projects/
+          imageId: "30",
           specs: [
             "Heavy-Duty 1.5mm CRCA Metal Enclosure",
             "Insulated Foam Infill Tank Enclosure",
@@ -1785,7 +1763,7 @@ function CommercialPage() {
           title: "Domestic Inverter Battery Enclosure & Texture Study",
           tag: "Parametric Surface Texture & Heavy-Duty Load Linkages",
           desc: "Re-engineered heavy 150 Ah tall-tubular inverter battery housings into a modern domestic hardware asset with aerated stiffness dimples and dual rope pivot handles.",
-          imageId: "31", // In src/assets/new projects/
+          imageId: "31",
           specs: [
             "High-Impact Polypropylene Shell",
             "Parametric Dimple Aerated Grid",
@@ -1888,12 +1866,11 @@ function CommercialPage() {
   );
 }
 
-/* --- PAGE 4: PLAYGROUND (EXPANDED TO INCLUDE 86 TO 100) --- */
+/* --- PAGE 4: PLAYGROUND WITH SHIMMER LOADERS --- */
 function PlaygroundPage() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const playgroundRenders = [
-    // Original playground batch
     { id: "59", alt: "Physical Form & Ergonomic Clay Mockup" },
     { id: "60", alt: "Procedural Shading & Optical Refraction Study" },
     { id: "63", alt: "Grasshopper Parametric Fluting Toolpath" },
@@ -1910,8 +1887,6 @@ function PlaygroundPage() {
     { id: "83", alt: "Dual-Durometer Overmold Texture Sample" },
     { id: "84", alt: "Minimalist Ambient Lighting Render" },
     { id: "85", alt: "Workshop Prototyping Assembly Still" },
-
-    // Added slots: 86 through 97
     { id: "86", alt: "Ergonomic Handheld Exploration" },
     { id: "87", alt: "Sub-D Surface Continuity Study" },
     { id: "88", alt: "Algorithmic Generative Texture" },
@@ -1944,17 +1919,17 @@ function PlaygroundPage() {
         </p>
       </div>
 
-      {/* Dynamic Multi-Aspect Masonry (Accommodates Wide, Square & Tall Renders with Zero Underlay Text) */}
       <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {playgroundRenders.map((item, idx) => (
           <div 
             key={idx} 
-            className="break-inside-avoid rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 shadow-xs hover:border-neutral-400 transition-all duration-300 group"
+            className="break-inside-avoid rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-100 shadow-xs hover:border-neutral-400 transition-all duration-300 group min-h-[140px]"
           >
             <ProjectImage 
               id={item.id} 
               altText={item.alt} 
               fitMode="object-cover"
+              withLoader={true}
               className="w-full h-auto transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             />
           </div>
@@ -1997,7 +1972,7 @@ function AboutPage() {
           <div className="lg:col-span-5">
             <div className="w-full aspect-[4/3] lg:aspect-[16/13] rounded-2xl overflow-hidden shadow-sm border border-neutral-200 bg-neutral-100">
               <ProjectImage 
-                id="1" // In src/assets/
+                id="1"
                 altText="Sahitya Kashyap Studio CAD & Prototyping Setup" 
                 className="w-full h-full object-cover object-center"
               />
