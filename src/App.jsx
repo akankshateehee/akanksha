@@ -99,7 +99,7 @@ function getAssetUrl(id) {
   });
   return matchKey ? assetFiles[matchKey].default : null;
 }
-function ProjectImage({ id, altText, className = "", fitMode = "object-cover", priority = false }) {
+function ProjectImage({ id, altText, className = "", fitMode = "object-cover" }) {
   const src = getAssetUrl(id);
 
   if (!src) {
@@ -118,7 +118,6 @@ function ProjectImage({ id, altText, className = "", fitMode = "object-cover", p
     <img 
       src={src} 
       alt={altText} 
-      loading={priority ? "eager" : "lazy"}
       decoding="async"
       className={`${fitMode} w-full h-full ${className}`} 
     />
