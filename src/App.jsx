@@ -1161,7 +1161,7 @@ function HomePage() {
             </div>
             <h4 className="text-xl font-medium text-white mb-2">About Sahitya</h4>
             <p className="text-neutral-400 text-xs leading-relaxed mb-6 font-light">
-              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience[cite: 8].
+              B.Des from DTU, Offsite Pro Chicago, CSWP Certified, Blender 3D, and Future Factory experience.
             </p>
             <div className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white">
               Read Profile <ArrowUpRight className="w-3.5 h-3.5" />
