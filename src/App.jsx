@@ -510,7 +510,7 @@ const ARCHIVE_PROJECTS = [
     }
   },
 
-  /* 2. TOY DESIGN */
+/* 2. TOY DESIGN */
   {
     slug: "coordinate-war",
     title: "Coordinate War",
@@ -520,8 +520,8 @@ const ARCHIVE_PROJECTS = [
     date: "2023",
     category: "Toy Design",
     badge: "TOY ARCHITECTURE / LOW-CAPEX DFM",
-    thumbId: "4",
-    heroId: "8",
+    thumbId: "4", // In src/assets/thumbnails/
+    heroId: "8",  // In src/assets/old/
     metaHeader: {
       timeline: "2 Months",
       client: "Webby Toys — Freshmen Year Internship Project",
@@ -545,7 +545,7 @@ const ARCHIVE_PROJECTS = [
         tag: "OPPORTUNITY MAPPING",
         title: "Finding Opportunities in STEAM Curricula",
         desc: "Mapped intersections between classic games (Pinball, Carrom) and childhood behaviors (spatial reasoning, 2D maps, trajectory angles) to anchor Cartesian coordinate math in physical play.",
-        imageId: "31",
+        imageId: "48", // Replaced duplicate 31 -> now unique to src/assets/old/48.webp
         caption: "Slide 21: Opportunity Tree Across Science, Math & Spatial Reasoning",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
@@ -555,7 +555,7 @@ const ARCHIVE_PROJECTS = [
         tag: "CONCEPT IDEATION",
         title: "Mechanism Explorations & Trajectory Linkages",
         desc: "Explored 3 concepts: Concept #1 Slider linkages, Concept #2 Light ray angles, and Concept #3 Rotating Turret Linkages. Concept #3 was selected for its direct tactile feedback.",
-        imageId: "32",
+        imageId: "32", // In src/assets/old/
         caption: "Slide 23: Mechanism Ideation Sheets & Aiming Detent Concepts",
         aspectClass: "aspect-[4/3]",
         fitMode: "object-contain bg-white"
@@ -565,7 +565,7 @@ const ARCHIVE_PROJECTS = [
         tag: "RAPID PROTOTYPING",
         title: "Prototype Evolution & Structural Assembly",
         desc: "Iterated through 4 functional working mockups to test friction fit tab-and-slot joints, 180° rotational turret tolerances, and consistent marble launch trajectories.",
-        imageId: "34",
+        imageId: "34", // In src/assets/old/
         caption: "Slide 25: Production Laser-Cut Assembly & Integrated Score Board",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
@@ -575,7 +575,7 @@ const ARCHIVE_PROJECTS = [
         tag: "COORDINATE INDEXING",
         title: "Plan View Coordinate Grid: (X, Y) Numerical Trajectory Layout",
         desc: "Calculated layout of 16 precision drop holes marked with discrete Cartesian indices (1,1 to 4,4), calibrated directly to dice roll probability matrices.",
-        imageId: "36",
+        imageId: "36", // In src/assets/old/
         caption: "Slide 27: Top-Down Plan View Numerical Grid Map",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-contain bg-neutral-900"
@@ -585,28 +585,28 @@ const ARCHIVE_PROJECTS = [
         tag: "HOW TO PLAY",
         title: "Play! Throw the Dice, Aim & Shoot, Record Score",
         desc: "Step 1: Throw the coordinate dice -> Step 2: Calculate the coordinate intersection, orient the mechanical turret angle, aim & shoot -> Step 3: Record score on friction-fit sliding markers.",
-        imageId: "38",
+        imageId: "38", // In src/assets/old/
         caption: "Slide 28: Interactive Gameplay Flow & Tactile Scoring Steps",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
-        imageId: "35",
+        imageId: "35", // In src/assets/old/
         caption: "Kinematic Turret Pivot Detailing & Pinion Teeth Fitment",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "37",
+        imageId: "37", // In src/assets/old/
         caption: "Die-Cut Flat Packaging Nesting Simulation",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
-        imageId: "41",
+        imageId: "41", // In src/assets/old/
         caption: "Elevation View Assembly & Marble Feed Clearance",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
