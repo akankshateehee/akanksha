@@ -435,7 +435,7 @@ const ARCHIVE_PROJECTS = [
         title: "Attach, Bend, and Twist Architectures",
         desc: "Explored 3 mechanism architectures: Concept 1 'Attach' (swappable handles), Concept 2 'Bend' (single-plane hinge), and Concept 3 'Twist' (twist-and-lock detent joint). Concept 3 was selected for internal wire protection and tactile locking.",
         imageId: "67",
-        caption: "Slide 52: Kinematic Exploration: Comparing Mechanical Hinge Concepts",
+        caption: "Sketching 3 Concepts for 3 Architecture",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
       },
@@ -445,7 +445,7 @@ const ARCHIVE_PROJECTS = [
         title: "Form Exploration Across Articulations",
         desc: "Iterated handle proportions across straight-line, 45-degree, and 90-degree angles to ensure natural thumb indexing in both pencil and pistol configurations.",
         imageId: "68",
-        caption: "Slide 53: Form Variations Investigating Balance in Pencil and Pistol Modes",
+        caption: "Ergonomics Testing: Button Placement",
         aspectClass: "aspect-[21/8] md:aspect-[24/8]",
         fitMode: "object-contain bg-white"
       },
@@ -455,42 +455,42 @@ const ARCHIVE_PROJECTS = [
         title: "Haptic Detents, Rocker Switches & USB-C",
         desc: "Integrated an internal PTC ceramic heating core, analog rocker switch with color dot feedback, internal USB-C fast charging, and an anti-drool food-grade silicone nozzle shroud.",
         imageId: "74",
-        caption: "Slide 59: CMF Detailing: Soft-Touch Chassis, High-Gloss Actuators & Rocker Switches",
+        caption: "Basic Schematics of the Glue Gun",
         aspectClass: "aspect-[16/10] md:aspect-[16/9]",
         fitMode: "object-contain bg-white"
       },
       {
         type: "pure_render_spread",
         imageId: "75",
-        caption: "Slide 60: Hero Render: Articulating Craft Adhesive Tool in Pencil Grip Mode",
+        caption: "CMF Inspiration Board",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
         imageId: "76",
-        caption: "Internal Mechanical Packaging & PTC Heating Cartridge Assembly",
+        caption: "Pen Mode",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
         imageId: "77",
-        caption: "Detent Articulation Joint Exploded View",
+        caption: "Gun Mode",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
         imageId: "78",
-        caption: "Slide 62: CMF Product Still: Balanced Dual-Tone Ergonomics and Silicone Shroud",
+        caption: "Closeup View of Interaction Point",
         aspectClass: "aspect-[16/9] md:aspect-[21/9]",
         fitMode: "object-cover"
       },
       {
         type: "pure_render_spread",
         imageId: "56",
-        caption: "Dual-Tone Analogous CMF Colorway Study",
+        caption: "Context Render",
         aspectClass: "aspect-[16/9]",
         fitMode: "object-cover"
       },
@@ -2041,7 +2041,7 @@ function AboutPage() {
                   </div>
                   <div className="border-t border-neutral-700/50 pt-3">
                     <span className="text-neutral-400 block mb-1">Manufacturing Realization (DFM/DFA)</span>
-                    <p className="text-neutral-200 font-medium leading-relaxed">Injection Mould Core/Cavity, Undercut Mitigation, GD&T, Progressive Dies, Sheet Nesting</p>
+                    <p className="text-neutral-200 font-medium leading-relaxed">Injection Mould Core/Cavity, GD&T, Progressive Dies, Sheet Nesting</p>
                   </div>
                 </div>
               </div>
