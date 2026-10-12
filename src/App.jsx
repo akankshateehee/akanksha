@@ -183,10 +183,15 @@ const assetFiles = import.meta.glob('./assets/**/*.{png,webp}', { eager: true })
 
 function getAssetUrl(id) {
   if (!id) return null;
+  const searchId = String(id).trim().toLowerCase();
+
+  // Find exact filename without extension
   const matchKey = Object.keys(assetFiles).find(key => {
-    const filename = key.split('/').pop().replace(/\.(png|webp)$/i, '');
-    return filename === String(id);
+    const fileNameWithExt = key.split('/').pop() || '';
+    const baseName = fileNameWithExt.replace(/\.(png|webp)$/i, '').trim().toLowerCase();
+    return baseName === searchId;
   });
+
   return matchKey ? assetFiles[matchKey].default : null;
 }
 
@@ -1987,7 +1992,7 @@ function AboutPage() {
             
             <div className="lg:col-span-5 space-y-12">
               <div>
-                <h2 className="text-3xl md:text-4xl font-medium text-white mb-6">Design Pedigree & Honors</h2>
+                <h2 className="text-3xl md:text-4xl font-medium text-white mb-6">Design Education & ToolMaking Background</h2>
                 <p className="text-neutral-400 text-lg font-light leading-relaxed mb-6">
                   Industrial design leadership driven by user empathy, visual form development, and tactical ergonomics. My foundation in toolmaking acts as a production accelerator—ensuring aesthetic visions survive the engineering handoff intact.
                 </p>
