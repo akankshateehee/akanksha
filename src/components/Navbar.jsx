@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Download } from 'lucide-react';
 
 /* --- NAVIGATION --- */
 export default function Navbar() {
@@ -36,10 +36,14 @@ export default function Navbar() {
           </div>
 
           <a 
-            href="mailto:design.er.saahi@gmail.com" 
-            className="text-[13px] font-semibold bg-neutral-900 text-white px-5 py-2.5 rounded-full hover:bg-neutral-800 active:scale-95 transition-all"
+            href="https://drive.usercontent.google.com/download?id=1jmTcx1ExOH2r-nisx45hZydq_H0DPOTM&export=download&authuser=0&confirm=t&uuid=75ec48ca-98cf-465b-bca9-e54bb6b8e49e&at=AMrWOn3HA2kfxLXmkeLtfvd8c7UO:1791902749615" 
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+            className="inline-flex items-center gap-2 text-[13px] font-semibold bg-neutral-900 text-white px-5 py-2.5 rounded-full hover:bg-neutral-800 active:scale-95 transition-all shadow-xs"
           >
-            Get in touch
+            <Download className="w-3.5 h-3.5" />
+            Download CV
           </a>
         </div>
 
@@ -75,11 +79,15 @@ export default function Navbar() {
             </a>
             <div className="pt-2">
               <a 
-                href="mailto:design.er.saahi@gmail.com" 
+                href="https://drive.usercontent.google.com/download?id=1jmTcx1ExOH2r-nisx45hZydq_H0DPOTM&export=download&authuser=0&confirm=t&uuid=75ec48ca-98cf-465b-bca9-e54bb6b8e49e&at=AMrWOn3HA2kfxLXmkeLtfvd8c7UO:1791902749615" 
+                target="_blank"
+                rel="noopener noreferrer"
+                download
                 onClick={closeMenu}
-                className="w-full text-center block text-xs font-sans font-semibold bg-neutral-900 text-white px-5 py-3 rounded-full hover:bg-neutral-800 active:scale-95 transition-all tracking-normal"
+                className="w-full text-center inline-flex items-center justify-center gap-2 text-xs font-sans font-semibold bg-neutral-900 text-white px-5 py-3 rounded-full hover:bg-neutral-800 active:scale-95 transition-all tracking-normal"
               >
-                Get in touch
+                <Download className="w-3.5 h-3.5" />
+                Download CV
               </a>
             </div>
           </div>

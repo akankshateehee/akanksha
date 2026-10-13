@@ -59,7 +59,7 @@ export default function AboutPage() {
       {/* Brands Worked With */}
       <BrandLogos 
         headline="Brands & Industry Client Experience"
-        tagline="Design engagements across consumer appliances, cabin interior CMF, defence engineering, and additive manufacturing."
+        tagline="Design & Manufacturing engagements across consumer appliances, cabin interior CMF, and additive manufacturing and topology optimization."
       />
 
       <section className="bg-neutral-900 py-32 text-white">

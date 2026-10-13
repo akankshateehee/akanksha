@@ -1,8 +1,8 @@
-import galaLogo from '../assets/brands/gala.svg';
+import galaLogo from '../assets/brands/gala.png';
 import eurekaForbesLogo from '../assets/brands/eureka-forbes.svg';
 import marutiSuzukiLogo from '../assets/brands/maruti-suzuki.svg';
 import luminousLogo from '../assets/brands/luminous.png';
-import drdoLogo from '../assets/brands/drdo.svg';
+import drdoLogo from '../assets/brands/drdo.png';
 import webbyToysLogo from '../assets/brands/webby-toys.png';
 import objectifyLogo from '../assets/brands/objectify.png';
 import tataLogo from '../assets/brands/tata.svg';
@@ -13,7 +13,7 @@ export const BRANDS = [
     name: "Gala",
     fullName: "Gala (Freudenberg Group)",
     logo: galaLogo,
-    sizeClass: "h-[38px] md:h-[55px] max-w-[130px]"
+    sizeClass: "h-[36px] md:h-[46px] max-w-[130px]"
   },
   {
     id: "eureka-forbes",
@@ -34,14 +34,14 @@ export const BRANDS = [
     name: "Luminous",
     fullName: "Luminous Power Technologies",
     logo: luminousLogo,
-    sizeClass: "h-[36px] md:h-[42px] max-w-[140px]"
+    sizeClass: "h-[28px] md:h-[34px] max-w-[150px] md:max-w-[165px]"
   },
   {
     id: "drdo",
     name: "DRDO",
     fullName: "Defence Research and Development Organisation",
     logo: drdoLogo,
-    sizeClass: "h-[44px] md:h-[55px] max-w-[95px] md:max-w-[105px]"
+    sizeClass: "h-[54px] md:h-[66px] max-w-[70px] md:max-w-[80px]"
   },
   {
     id: "webby-toys",
