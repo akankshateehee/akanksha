@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import CommercialPage from './pages/CommercialPage';
 import PlaygroundPage from './pages/PlaygroundPage';
+import ExperimentsPage from './pages/ExperimentsPage';
 import AboutPage from './pages/AboutPage';
 
 /* --- ROOT APP --- */
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="/commercial-nda" element={<CommercialPage />} />
               <Route path="/playground" element={<PlaygroundPage />} />
               <Route path="/personal" element={<PlaygroundPage />} />
+              <Route path="/experiments" element={<ExperimentsPage />} />
               <Route path="/about" element={<AboutPage />} />
             </Routes>
           </main>

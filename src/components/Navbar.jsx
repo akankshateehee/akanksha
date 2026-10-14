@@ -24,6 +24,7 @@ export default function Navbar() {
             <Link to="/" className="hover:text-neutral-900 transition-colors">Home</Link>
             <Link to="/commercial" className="hover:text-neutral-900 transition-colors">Commercial</Link>
             <Link to="/playground" className="hover:text-neutral-900 transition-colors">Playground</Link>
+            <Link to="/experiments" className="hover:text-neutral-900 transition-colors">Experiments</Link>
             <Link to="/about" className="hover:text-neutral-900 transition-colors">About</Link>
             <a 
               href="https://www.behance.net/sahityakashyap" 
@@ -65,8 +66,12 @@ export default function Navbar() {
           <div className="flex flex-col space-y-4 font-mono text-sm tracking-wider uppercase text-neutral-700">
             <Link to="/" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[01. Home]</Link>
             <Link to="/commercial" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[02. Commercial Hardware]</Link>
-            <Link to="/playground" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[03. Playground & Visual Lab]</Link>
-            <Link to="/about" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[04. About Sahitya]</Link>
+            <Link to="/playground" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[03. Visual Lab & Playground]</Link>
+            <Link to="/experiments" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors flex items-center justify-between">
+              <span>[04. Experiments & Pipelines]</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+            </Link>
+            <Link to="/about" onClick={closeMenu} className="py-2 border-b border-neutral-100 hover:text-black transition-colors">[05. About Sahitya]</Link>
             <a 
               href="https://www.behance.net/sahityakashyap" 
               target="_blank" 

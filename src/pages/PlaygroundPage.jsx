@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import ProjectImage from '../components/ProjectImage';
+import PlaygroundHeaderNav from '../components/PlaygroundHeaderNav';
 import { PLAYGROUND_RENDERS } from '../data/playgroundData';
 
 /* --- PAGE 4: PLAYGROUND WITH SHIMMER LOADERS --- */
@@ -12,9 +12,7 @@ export default function PlaygroundPage() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 md:px-12 pt-20 pb-32">
-      <Link to="/" className="group inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-neutral-400 hover:text-neutral-900 mb-12 transition-colors uppercase">
-        <ArrowLeft className="w-3.5 h-3.5" /> Back to home
-      </Link>
+      <PlaygroundHeaderNav />
       
       <div className="max-w-3xl mb-14">
         <div className="inline-flex items-center gap-2 mb-6 text-[10px] font-bold text-neutral-900 bg-neutral-100 border border-neutral-200 px-3 py-1 rounded-full uppercase tracking-widest">
