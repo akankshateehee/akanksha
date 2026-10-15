@@ -118,18 +118,19 @@ export default function CustomCursor() {
           scroll-behavior: smooth;
         }
         ::-webkit-scrollbar {
-          width: 6px;
-          height: 6px;
+          width: 7px;
+          height: 7px;
         }
         ::-webkit-scrollbar-track {
-          background: #fafafa;
+          background: #faf8f5;
         }
         ::-webkit-scrollbar-thumb {
-          background: #d4d4d4;
+          background: #ded7cc;
           border-radius: 9999px;
+          border: 1px solid #faf8f5;
         }
         ::-webkit-scrollbar-thumb:hover {
-          background: #737373;
+          background: #cf1830;
         }
         @media (pointer: fine) {
           *, *:before, *:after {
@@ -138,7 +139,7 @@ export default function CustomCursor() {
         }
       `}</style>
 
-      {/* Zero-Lag Instant Precision Dot with Adaptive Dark Contrast */}
+      {/* Zero-Lag Instant Precision Dot with Neutomni Red Accent */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -146,20 +147,12 @@ export default function CustomCursor() {
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
           isHovered
-            ? isDark
-              ? 'w-7 h-7 -ml-3.5 -mt-3.5 bg-white/15 border border-white shadow-[0_0_12px_rgba(255,255,255,0.4)]'
-              : 'w-7 h-7 -ml-3.5 -mt-3.5 bg-neutral-900/10 border border-neutral-900 shadow-xs'
-            : isDark
-              ? 'w-2.5 h-2.5 -ml-[5px] -mt-[5px] bg-white ring-1 ring-black/40 shadow-[0_0_8px_rgba(255,255,255,0.8)] border-none'
-              : 'w-2.5 h-2.5 -ml-[5px] -mt-[5px] bg-neutral-900 ring-1 ring-white/70 shadow-xs border-none'
+            ? 'w-8 h-8 -ml-4 -mt-4 bg-[#cf1830]/15 border border-[#cf1830] shadow-[0_0_12px_rgba(207,24,48,0.35)]'
+            : 'w-2.5 h-2.5 -ml-[5px] -mt-[5px] bg-[#cf1830] shadow-[0_0_6px_rgba(207,24,48,0.6)] border-none'
         }`}
       >
         {isHovered && (
-          <span
-            className={`w-1 h-1 rounded-full transition-colors duration-150 ${
-              isDark ? 'bg-white shadow-[0_0_4px_rgba(255,255,255,0.9)]' : 'bg-neutral-900'
-            }`}
-          />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#cf1830]" />
         )}
       </div>
     </>
