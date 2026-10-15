@@ -11,9 +11,12 @@ import {
   Check, 
   Sliders, 
   Eye, 
-  ShieldCheck 
+  ShieldCheck,
+  Zap,
+  Sparkles
 } from 'lucide-react';
 import PlaygroundHeaderNav from '../components/PlaygroundHeaderNav';
+import renderFloIcon from '../assets/id-renderflo-icon.png';
 
 export default function ExperimentsPage() {
   const [copiedInstall, setCopiedInstall] = useState(false);
@@ -116,8 +119,9 @@ export default function ExperimentsPage() {
           {/* Header Metadata */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-8 border-b border-neutral-800/80">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="bg-orange-500 text-black px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-wider uppercase">
-                Featured Pipeline Add-On
+              <span className="bg-orange-500 text-black px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-black" />
+                <span>v2.3.1 Released</span>
               </span>
               <span className="text-neutral-400 font-mono text-xs">
                 Blender 3.6 LTS – 5.2.2+ Compatible
@@ -129,27 +133,44 @@ export default function ExperimentsPage() {
             </div>
           </div>
 
-          {/* Main Title & Pitch */}
-          <div className="max-w-3xl mb-12">
-            <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-white mb-6 leading-tight">
-              ID RenderFlo — Blender Studio & Matrix Render Pipeline
-            </h2>
-            <p className="text-neutral-300 text-base md:text-lg leading-relaxed font-light">
-              A dedicated product visualization pipeline built directly into Blender's 3D Viewport. Brings a fast, KeyShot-style workflow to Cycles: multi-camera studios, interactive specular highlight targeting, CMF colorway management, and an unattended GPU matrix queue that crosses every camera with every material variation without freezing your machine.
-            </p>
+          {/* Main Title, Plugin Icon & Pitch */}
+          <div className="flex flex-col sm:flex-row items-start gap-6 md:gap-8 mb-12">
+            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-neutral-700/80 bg-neutral-900 shrink-0 transform hover:scale-105 transition-all duration-300">
+              <img 
+                src={renderFloIcon} 
+                alt="ID RenderFlo Plugin Icon" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="max-w-3xl">
+              <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-white mb-4 leading-tight">
+                ID RenderFlo — Blender Studio & Matrix Render Pipeline
+              </h2>
+              <p className="text-neutral-300 text-base md:text-lg leading-relaxed font-light">
+                A dedicated product visualization pipeline built directly into Blender's 3D Viewport. Brings a fast, KeyShot-style workflow to Cycles: multi-camera studios, interactive specular highlight targeting, CMF colorway management, and an unattended GPU matrix queue that crosses every camera with every material variation without freezing your machine.
+              </p>
+            </div>
           </div>
 
           {/* Download Action Bar */}
           <div className="p-6 md:p-8 bg-neutral-900/90 rounded-2xl border border-neutral-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-14">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-white font-mono text-sm font-semibold">
-                <FileText className="w-4 h-4 text-orange-400" />
-                <span>ID_RenderFlo.zip</span>
-                <span className="text-xs text-neutral-400 font-normal">(v1.0.0 Production Bundle)</span>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl overflow-hidden border border-neutral-700/80 shrink-0 bg-neutral-950 shadow-sm">
+                <img 
+                  src={renderFloIcon} 
+                  alt="ID RenderFlo Icon" 
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <p className="text-neutral-400 text-xs font-mono">
-                Includes: <code className="text-neutral-200">ID_RenderFlo/__init__.py</code>, <code className="text-neutral-200">HOW_TO_USE.txt</code>, and <code className="text-neutral-200">LICENSE.txt</code>
-              </p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-white font-mono text-sm font-semibold">
+                  <span>ID_RenderFlo.zip</span>
+                  <span className="text-xs text-neutral-400 font-normal">(v2.3.1 Production Bundle)</span>
+                </div>
+                <p className="text-neutral-400 text-xs font-mono">
+                  Includes: <code className="text-neutral-200">ID_RenderFlo/__init__.py</code>, <code className="text-neutral-200">blender_manifest.toml</code>, <code className="text-neutral-200">HOW_TO_USE.txt</code>, and <code className="text-neutral-200">LICENSE.txt</code>
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -159,8 +180,8 @@ export default function ExperimentsPage() {
                 className="inline-flex items-center gap-2.5 bg-white text-neutral-900 hover:bg-neutral-100 active:scale-95 px-6 py-3.5 rounded-full font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md group"
               >
                 <Download className="w-4 h-4 text-neutral-900 group-hover:translate-y-0.5 transition-transform" />
-                <span>Download Pipeline (.zip)</span>
-                <span className="text-[10px] text-neutral-500 font-normal">21.8 KB</span>
+                <span>Download v2.3.1 (.zip)</span>
+                <span className="text-[10px] text-neutral-500 font-normal">23.7 KB</span>
               </a>
 
               <button
@@ -183,11 +204,81 @@ export default function ExperimentsPage() {
             </div>
           </div>
 
-          {/* Architecture Features Grid */}
+          {/* WHAT'S NEW IN V2.3.1 (RELEASE NOTES) */}
+          <div className="mb-14 p-6 md:p-8 bg-neutral-900/70 rounded-2xl border border-neutral-800/90">
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-6 pb-4 border-b border-neutral-800">
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-orange-400">
+                <Zap className="w-4 h-4 text-orange-400" />
+                <span>What's New in v2.3.1 — Studio Workflow & Matrix Overhaul</span>
+              </div>
+              <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+                Release Notes // v2.3.1
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Note 1 */}
+              <div className="p-5 bg-neutral-950/70 rounded-xl border border-neutral-800/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                  <h4 className="text-sm font-medium text-white">Live Auto-Save Engine</h4>
+                </div>
+                <p className="text-neutral-400 text-xs font-light leading-relaxed">
+                  Camera angles, focal lengths, and studio lighting adjustments now save continuously in real time via a targeted depsgraph handler (<code className="text-neutral-300">depsgraph_update_post</code>), plus automatically before switching studios or starting a batch render. No more needing to click manual refresh after every tweak.
+                </p>
+              </div>
+
+              {/* Note 2 */}
+              <div className="p-5 bg-neutral-950/70 rounded-xl border border-neutral-800/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                  <h4 className="text-sm font-medium text-white">Studio Lock (LOCKED / UNLOCKED)</h4>
+                </div>
+                <p className="text-neutral-400 text-xs font-light leading-relaxed">
+                  Added a per-studio padlock toggle in the studio list. Locking a studio freezes its camera and light transforms directly in the 3D viewport (<code className="text-neutral-300">lock_location</code>, <code className="text-neutral-300">lock_rotation</code>, <code className="text-neutral-300">lock_scale</code>) and protects its saved state against accidental overwrites.
+                </p>
+              </div>
+
+              {/* Note 3 */}
+              <div className="p-5 bg-neutral-950/70 rounded-xl border border-neutral-800/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                  <h4 className="text-sm font-medium text-white">Independent Per-Studio CMF Matrix Selection</h4>
+                </div>
+                <p className="text-neutral-400 text-xs font-light leading-relaxed">
+                  Colorway batch toggles are now decoupled from global presets and stored per studio. You can select specific CMF combinations for each individual studio (e.g., render 2 colorways for Hero Studio and all 5 colorways for Detail Studio).
+                </p>
+              </div>
+
+              {/* Note 4 */}
+              <div className="p-5 bg-neutral-950/70 rounded-xl border border-neutral-800/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                  <h4 className="text-sm font-medium text-white">Smart Default Material Fallback in Matrix Mode</h4>
+                </div>
+                <p className="text-neutral-400 text-xs font-light leading-relaxed">
+                  Unchecking the CMF module (or unchecking all individual colorway boxes) on a studio no longer skips that studio during a Matrix Render—instead, it multiplies cleanly as 1 render pass using that studio's default materials.
+                </p>
+              </div>
+
+              {/* Note 5 */}
+              <div className="p-5 bg-neutral-950/70 rounded-xl border border-neutral-800/80 space-y-2 md:col-span-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                  <h4 className="text-sm font-medium text-white">UI & Context Crash Fix</h4>
+                </div>
+                <p className="text-neutral-400 text-xs font-light leading-relaxed">
+                  Resolved a Blender <code className="text-neutral-300">draw()</code> context restriction that caused UI panels below the CMF section to disappear when toggling colorway options. Added a dedicated sync operator (<code className="text-neutral-300">renderflo.sync_cmf_matrix</code>) and automatic property callbacks.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* FULL FEATURE SUMMARY (FOR GITHUB / FIRST-TIME USERS) */}
           <div className="mb-14">
             <div className="flex items-center gap-2 mb-6 font-mono text-xs uppercase tracking-widest text-neutral-400">
               <Cpu className="w-4 h-4 text-orange-400" />
-              <span>Core Architectural Modules</span>
+              <span>Full Feature Summary (For GitHub / First-Time Users)</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,9 +287,9 @@ export default function ExperimentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
                   <Box className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">01. Native CAD Bridge & Auto-Prep</h4>
+                <h4 className="text-base font-medium text-white mb-2">Universal Isolated CAD Bridge</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  Direct <code className="text-neutral-300">.STEP</code>, <code className="text-neutral-300">.IGES</code>, and <code className="text-neutral-300">.STL</code> ingestion via OpenCASCADE. Automatically snaps base to floor (<code className="text-neutral-300">Z=0</code>), remaps Y-Up SolidWorks models to Z-Up, and scales millimeters to meters for realistic Cycles photon falloff.
+                  Self-bootstraps an OpenCASCADE (<code className="text-neutral-300">cascadio</code> / <code className="text-neutral-300">gmsh</code>) kernel in an isolated environment to import <code className="text-neutral-300">.STEP</code>, <code className="text-neutral-300">.STP</code>, <code className="text-neutral-300">.IGES</code>, and <code className="text-neutral-300">.STL</code> assemblies cleanly across Blender 3.6 through 5.2.2+.
                 </p>
               </div>
 
@@ -207,31 +298,31 @@ export default function ExperimentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
                   <Camera className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">02. Dynamic Studio Framing & Aspect Presets</h4>
+                <h4 className="text-base font-medium text-white mb-2">Multi-Studio Camera & Format Manager</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  One-click switching between 16:9 Widescreen, 1:1 Square, 4:5 Portrait, and 9:16 Vertical. Automatically compensates camera sensor fit so your product never gets clipped when jumping between formats.
+                  Switch between independent cameras, focal lengths, and aspect ratios (16:9, 1:1, 4:5, 9:16, 21:9) with automatic sensor fitting, preventing products from getting clipped during aspect switching.
                 </p>
               </div>
 
               {/* Feature 3 */}
               <div className="p-6 bg-neutral-900/60 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
-                  <Eye className="w-4 h-4" />
+                  <Layers className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">03. Eyedropper Highlight Tool</h4>
+                <h4 className="text-base font-medium text-white mb-2">Model Sets & Exploded Views</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  No more wrestling with 3D rotation gizmos. Click the eyedropper, hover over any curved chamfer or parting line on your model, and left-click—the studio area light locks its specular reflection precisely where you pointed.
+                  Record and restore per-studio part positions, rotations, and collection visibility to effortlessly toggle between assembled hero shots and exploded technical views without duplicating geometry.
                 </p>
               </div>
 
               {/* Feature 4 */}
               <div className="p-6 bg-neutral-900/60 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
-                  <Layers className="w-4 h-4" />
+                  <Eye className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">04. CMF Colorway Matrix</h4>
+                <h4 className="text-base font-medium text-white mb-2">In-Panel CMF Cloner & Highlight Pinning</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  Save, clone, and switch complex Color, Material, Finish palettes (Matte Black, Satin Stainless, Translucent CMF) across the entire assembly without duplicating objects or cluttering your outliner.
+                  Clone materials on the fly, manage multi-part colorways, and use the interactive eyedropper to pin area light reflections directly onto product chamfers and curved surfaces without 3D gizmo friction.
                 </p>
               </div>
 
@@ -240,9 +331,9 @@ export default function ExperimentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
                   <Cpu className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">05. Headless GPU Matrix Queue (N × M)</h4>
+                <h4 className="text-base font-medium text-white mb-2">Non-Blocking GPU Batch & Matrix Queue</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  Renders every checked camera studio multiplied by every checked CMF colorway in one batch. Uses a non-blocking modal timer loop so Blender stays 100% responsive without freezing or crashing.
+                  Render checked studios or full cross-product Studios x CMFs matrices sequentially on your GPU (OptiX, CUDA, HIP, Metal, oneAPI) with live progress tracking and ESC cancel support.
                 </p>
               </div>
 
@@ -251,9 +342,9 @@ export default function ExperimentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-neutral-800 text-orange-400 flex items-center justify-center mb-4">
                   <Sliders className="w-4 h-4" />
                 </div>
-                <h4 className="text-base font-medium text-white mb-2">06. Shadow Catcher & Curved Cyclorama</h4>
+                <h4 className="text-base font-medium text-white mb-2">Floor Shadow Catcher & Cyclorama</h4>
                 <p className="text-neutral-400 text-xs font-light leading-relaxed">
-                  Spawns an infinite cyclorama sweep or an invisible floor shadow catcher for clean transparent alpha PNGs, ready for client pitch decks, Behance hero spreads, or packaging boards.
+                  One-click infinite sweep cycloramas and invisible ground shadow catchers that isolate clean alpha contact occlusion shadows for transparent presentation boards and client pitch decks.
                 </p>
               </div>
             </div>
@@ -267,7 +358,7 @@ export default function ExperimentsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
               <div className="space-y-1.5">
                 <span className="text-orange-400 font-bold block">STEP 01</span>
-                <p className="text-neutral-300 font-sans text-sm">Download <code className="text-xs font-mono text-neutral-200">ID_RenderFlo.zip</code> using the direct button above.</p>
+                <p className="text-neutral-300 font-sans text-sm">Download <code className="text-xs font-mono text-neutral-200">ID_RenderFlo.zip</code> (v2.3.1) using the direct button above.</p>
               </div>
               <div className="space-y-1.5">
                 <span className="text-orange-400 font-bold block">STEP 02</span>
