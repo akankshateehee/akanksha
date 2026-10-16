@@ -70,11 +70,12 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <span className="text-lg md:text-xl font-bold tracking-[0.08em] text-neutomni-text group-hover:text-neutomni-red transition-colors">
               AKANKSHA KOCHREKAR
+              
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-neutomni-red" />
           </div>
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutomni-textMuted font-medium">
-            Industrial & Product Design
+            SMILES AT STRANGERS, WAVES AT DOGS
           </span>
         </Link>
         
@@ -103,7 +104,7 @@ export default function Navbar() {
                   : 'text-neutomni-textMuted hover:text-neutomni-text font-medium'
               }`}
             >
-              <span className="text-neutomni-red mr-1 font-bold">02.</span> About & Story
+              <span className="text-neutomni-red mr-1 font-bold">02.</span> About
               {location.pathname === '/about' && (
                 <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutomni-red" />
               )}

@@ -32,27 +32,24 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-4 border-b border-dashed border-neutomni-border text-[11px] font-mono text-neutomni-textMuted">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-neutomni-red" />
-            <span className="text-neutomni-text font-bold tracking-wider">AKANKSHA KOCHREKAR</span>
+            <span className="text-neutomni-text font-bold tracking-wider">PRODUCT & USER EXPERIENCE DESIGNER</span>
             <span className="text-neutral-300">//</span>
-            <span>INDUSTRIAL DESIGNER</span>
+            <span></span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-neutomni-textSecondary font-medium">FUTURE FACTORY, MUMBAI // NID BHOPAL</span>
-            <span className="hidden sm:inline text-neutral-300">|</span>
-            <span className="hidden sm:inline text-neutomni-red font-semibold">2021 — PRESENT</span>
+            <span className="text-neutomni-textSecondary font-medium">BASED IN MUMBAI</span>
+            <span className="hidden sm:inline text-neutral-300">//</span>
+            <span className="hidden sm:inline text-neutomni-red font-semibold"></span>
           </div>
         </div>
 
         <div className="max-w-5xl">
           <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[82px] font-bold tracking-tight text-neutomni-text leading-[1.06] mb-8">
-            Empathy-driven, <br />
-            <span className="font-serif italic font-normal text-neutomni-red">impact-focused</span> <br />
-            product design.
+            I stare at products a little longer than most people. <br />
+            <span className="font-serif italic font-normal text-neutomni-red">That’s how I’m designed. That’s how I design.</span> <br />
+            
           </h1>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-neutomni-textSecondary font-light leading-relaxed max-w-3xl mb-12">
-            I design consumer products that are intuitive, functional, and thoughtfully resolved. Exploring multi-material systems, CMF, and production-aware engineering to refine everyday human experiences.
-          </p>
 
           {/* Quick CTA cluster */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -60,7 +57,7 @@ export default function HomePage() {
               href="#work"
               className="inline-flex items-center gap-2.5 bg-neutomni-red hover:bg-neutomni-redHover text-white px-7 py-4 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm"
             >
-              <span>Explore Selected Work</span>
+              <span>Explore Work</span>
               <ArrowDown className="w-3.5 h-3.5" />
             </a>
 
@@ -68,16 +65,11 @@ export default function HomePage() {
               to="/about"
               className="inline-flex items-center gap-2 bg-white hover:bg-neutomni-surfaceMuted border border-neutomni-border text-neutomni-text px-7 py-4 rounded-full font-mono text-xs uppercase tracking-wider transition-all shadow-xs"
             >
-              <span>About & Story</span>
+              <span>About Section</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-neutomni-red" />
             </Link>
 
-            <a 
-              href={`mailto:${BIO_DATA.email}`}
-              className="inline-flex items-center gap-2 text-neutomni-textSecondary hover:text-neutomni-red px-4 py-4 font-mono text-xs tracking-wider transition-colors font-medium"
-            >
-              <span>{BIO_DATA.email}</span>
-            </a>
+
           </div>
         </div>
 
@@ -85,26 +77,26 @@ export default function HomePage() {
         <div className="mt-20 pt-8 border-t border-neutomni-border grid grid-cols-2 md:grid-cols-4 gap-6 font-mono">
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
             <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">01 / CURRENT ROLE</span>
-            <p className="text-sm font-bold text-neutomni-text">Future Factory</p>
-            <p className="text-xs text-neutomni-textSecondary">ID Fellow (UTC Water Purifier Patent)</p>
+            <p className="text-sm font-bold text-neutomni-text">Future Factory, Mum</p>
+            <p className="text-xs text-neutomni-textSecondary">Consumer Product Design</p>
           </div>
 
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
             <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">02 / EDUCATION</span>
-            <p className="text-sm font-bold text-neutomni-text">NID Bhopal</p>
-            <p className="text-xs text-neutomni-textSecondary">B.Des Industrial Design (2021–25)</p>
+            <p className="text-sm font-bold text-neutomni-text">NID Madhya Pradesh</p>
+            <p className="text-xs text-neutomni-textSecondary">B.Des Industrial Design</p>
           </div>
 
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
-            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">03 / INTERNSHIPS</span>
-            <p className="text-sm font-bold text-neutomni-text">frog & Studio701</p>
-            <p className="text-xs text-neutomni-textSecondary">Consumer Hardware, IoT & Lighting</p>
+            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">03 / EXPERIENCE</span>
+            <p className="text-sm font-bold text-neutomni-text">frog Design, Blr</p>
+            <p className="text-xs text-neutomni-textSecondary">Physical & Digital Design</p>
           </div>
 
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
-            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">04 / INTELLECTUAL PROPERTY</span>
-            <p className="text-sm font-bold text-neutomni-text">2 Patents / Registrations</p>
-            <p className="text-xs text-neutomni-textSecondary">BOXED Furniture & AVIAN Teaset</p>
+            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">04 / RECOGNITION</span>
+            <p className="text-sm font-bold text-neutomni-text">Patents & Awards</p>
+            <p className="text-xs text-neutomni-textSecondary">BOXED · AVIAN · VBYLD</p>
           </div>
         </div>
 
@@ -123,7 +115,7 @@ export default function HomePage() {
               </h2>
             </div>
             <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-neutomni-text tracking-tight">
-              Selected Projects
+              Core Projects
             </h3>
           </div>
 
