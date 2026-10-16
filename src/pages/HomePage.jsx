@@ -34,7 +34,7 @@ export default function HomePage() {
             <span className="w-2 h-2 rounded-full bg-neutomni-red" />
             <span className="text-neutomni-text font-bold tracking-wider">AKANKSHA KOCHREKAR</span>
             <span className="text-neutral-300">//</span>
-            <span>INDUSTRIAL DESIGNER & FELLOW</span>
+            <span>INDUSTRIAL DESIGNER</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-neutomni-textSecondary font-medium">FUTURE FACTORY, MUMBAI // NID BHOPAL</span>
