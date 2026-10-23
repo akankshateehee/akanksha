@@ -16,11 +16,9 @@ export default function ConstructionBanner() {
         <div className="flex items-center gap-2.5 flex-wrap justify-center sm:justify-start">
           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-neutomni-red text-white text-[10px] font-bold uppercase tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-            Under Construction
+            
           </span>
-          <span className="font-medium text-neutomni-text">
-            Portfolio v2.0 is actively being curated. Case studies, DFM specs & interactive models are preview builds.
-          </span>
+
         </div>
 
         <div className="flex items-center gap-4 shrink-0">
@@ -30,7 +28,7 @@ export default function ConstructionBanner() {
             rel="noreferrer"
             className="inline-flex items-center gap-1 underline font-semibold text-neutomni-red hover:text-neutomni-redHover"
           >
-            <span>View Full Portfolio PDF (Google Drive)</span>
+            <span>View Full Portfolio in PDF here</span>
             <ArrowUpRight className="w-3 h-3" />
           </a>
           <button

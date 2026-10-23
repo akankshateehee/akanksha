@@ -38,25 +38,19 @@ export default function Navbar() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neutomni-red opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-neutomni-red"></span>
             </span>
-            <span>Open for Design Opportunities</span>
+            <span>Open to opportunities</span>
           </span>
           <span className="text-neutral-300">/</span>
-          <span>NID Bhopal Graduate (2021–25)</span>
+          <span></span>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <span className="text-neutomni-textMuted">MUMBAI, IN</span>
+            <span className="text-neutomni-textMuted">Based in MUMBAI, IN</span>
             <span className="text-neutomni-text font-semibold tabular-nums">{mumbaiTime || '03:52:00 PM'} IST</span>
           </div>
           <span className="text-neutral-300">/</span>
-          <a 
-            href={`mailto:${BIO_DATA.email}`} 
-            className="text-neutomni-textSecondary hover:text-neutomni-red transition-colors flex items-center gap-1.5 font-medium"
-          >
-            <Mail className="w-3 h-3 text-neutomni-red" />
-            <span>{BIO_DATA.email}</span>
-          </a>
+
         </div>
       </div>
 

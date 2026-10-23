@@ -37,7 +37,7 @@ export default function HomePage() {
             <span></span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-neutomni-textSecondary font-medium">BASED IN MUMBAI</span>
+            <span className="text-neutomni-textSecondary font-medium">INDUSTRIAL DESIGN GRADUATE</span>
             <span className="hidden sm:inline text-neutral-300">//</span>
             <span className="hidden sm:inline text-neutomni-red font-semibold"></span>
           </div>
@@ -82,21 +82,22 @@ export default function HomePage() {
           </div>
 
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
-            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">02 / EDUCATION</span>
-            <p className="text-sm font-bold text-neutomni-text">NID Madhya Pradesh</p>
-            <p className="text-xs text-neutomni-textSecondary">B.Des Industrial Design</p>
-          </div>
-
-          <div className="border-l-2 border-neutomni-red pl-4 py-1">
-            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">03 / EXPERIENCE</span>
+            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">02 / PAST EXPERIENCE</span>
             <p className="text-sm font-bold text-neutomni-text">frog Design, Blr</p>
             <p className="text-xs text-neutomni-textSecondary">Physical & Digital Design</p>
           </div>
 
           <div className="border-l-2 border-neutomni-red pl-4 py-1">
+            <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">03 / EDUCATION</span>
+            <p className="text-sm font-bold text-neutomni-text">NID Madhya Pradesh</p>
+            <p className="text-xs text-neutomni-textSecondary">B.Des Industrial Design</p>
+          </div>
+   
+   
+          <div className="border-l-2 border-neutomni-red pl-4 py-1">
             <span className="text-[10px] text-neutomni-red font-bold uppercase tracking-widest block mb-1">04 / RECOGNITION</span>
             <p className="text-sm font-bold text-neutomni-text">Patents & Awards</p>
-            <p className="text-xs text-neutomni-textSecondary">BOXED · AVIAN · VBYLD</p>
+            <p className="text-xs text-neutomni-textSecondary">BOXED · AVIAN · TOTO</p>
           </div>
         </div>
 
@@ -114,9 +115,6 @@ export default function HomePage() {
                 Portfolio Showcase
               </h2>
             </div>
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-neutomni-text tracking-tight">
-              Core Projects
-            </h3>
           </div>
 
           {/* Category filter pills */}
@@ -254,15 +252,13 @@ export default function HomePage() {
           <div>
             <div className="inline-flex items-center gap-2 mb-2 font-mono text-xs text-neutomni-red">
               <span>●</span>
-              <span>PATENTS, MATERIAL EXPLORATIONS & SYSTEMIC CRAFT</span>
+              <span>PATENTS, REGISTRATIONS, AWARDS & RECOGNITIONS</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-bold text-neutomni-text tracking-tight">
-              Additional Research & Design Explorations
+              Additional Research & Case Studies
             </h3>
           </div>
-          <span className="font-mono text-xs text-neutomni-textMuted">
-            03 Additional Works
-          </span>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -311,7 +307,7 @@ export default function HomePage() {
           
           <div className="max-w-2xl mb-16">
             <span className="font-mono text-xs text-neutomni-red uppercase tracking-widest block mb-3 font-semibold">
-              // DESIGN APPROACH & PHILOSOPHY
+              // MY DESIGN PHILOSOPHY
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutomni-text mb-6">
               How I translate raw curiosity into resolved physical reality.
